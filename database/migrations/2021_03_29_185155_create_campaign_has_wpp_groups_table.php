@@ -16,7 +16,7 @@ class CreateCampaignHasWppGroupsTable extends Migration
         Schema::create('campaign_has_wpp_groups', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('campaign_id');
-            $table->foreign('campaign_id')->references('id')->on('campaign');  
+            $table->foreign('campaign_id')->references('id')->on('campaigns');  
             $table->string('name_group');
             $table->longText('redirect_link');
             $table->integer('order');
