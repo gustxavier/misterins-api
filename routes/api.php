@@ -23,6 +23,8 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 Route::post('register', [PassportAuthController::class, 'register']);
 Route::post('login', [PassportAuthController::class, 'login']);
 
+
+
 Route::middleware('auth:api')->group(function () {
     Route::resource('posts', 'PostController');
 });
