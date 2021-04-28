@@ -20,10 +20,11 @@ class TaskListController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\Response  
      */
     public function index()
     {
+        return json_encode(array('data'=>'index entrou'));
         return new TaskListResourceCollection($this->tasklist->index());
     }
 
