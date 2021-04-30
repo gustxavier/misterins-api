@@ -18,12 +18,16 @@ Route::post('register', 'UserController@store')->name('users.store');
 Route::post('login', 'UserController@login')->name('users.login');
 
 Route::group(['prefix' => 'v1', 'middleware' => 'jwt.verify'], function () {
+  
   Route::apiResources([
     'tasklist'  =>  'TaskListController',
     'tasks'  =>  'TasksController',
+    'lives' => 'LiveController',
+    'live-comment' => 'LiveCommentController'
   ]);
 
   Route::put('task/close/{id}', 'TasksController@closeTask')->name('tasks.closeTask');
   Route::get('list/tasks/{id}', 'TasksController@tasksByList')->name('tasks.tasksByList');
+  Route::get('live-comment/live/{id}', 'LiveCommentController@getCommentByLive')->name('live-comment.commentByLive');
   Route::post('logout', 'UserController@logout')->name('users.logout');
 });

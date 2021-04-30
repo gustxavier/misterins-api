@@ -5,6 +5,7 @@ namespace App\Transformers\User;
 use Illuminate\Http\Resources\Json\ResourceCollection;
 
 use App\Services\ResponseService;
+use Illuminate\Support\Facades\Auth;
 
 class UserResourceCollection extends ResourceCollection
 {
@@ -30,6 +31,7 @@ class UserResourceCollection extends ResourceCollection
     return [
       'status' => true,
       'msg'    => 'Listando dados',
+      'permission' => Auth::user()->permission,
       'url'    => route('users.index')
     ];
   }

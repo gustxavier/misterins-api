@@ -5,6 +5,7 @@ namespace App\Transformers\Tasks;
 use Illuminate\Http\Resources\Json\ResourceCollection;
 
 use App\Services\ResponseService;
+use Illuminate\Support\Facades\Auth;
 
 class TasksResourceCollection extends ResourceCollection
 {
@@ -30,6 +31,7 @@ class TasksResourceCollection extends ResourceCollection
     return [
       'status' => true,
       'msg'    => 'Listando dados',
+      'permission' => Auth::user()->permission,
       'url'    => route('tasks.index')
     ];
   }

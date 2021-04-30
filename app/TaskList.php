@@ -20,7 +20,7 @@ class TaskList extends Model
     {
         return auth()
         ->user()
-        ->TaskList()
+        ->taskList()
         ->create($fields);
     }
 
@@ -28,7 +28,7 @@ class TaskList extends Model
     {
         $show = auth()
         ->user()
-        ->TaskList()
+        ->taskList()
         ->find($id);
  
         if (!$show) {

@@ -1,15 +1,14 @@
 <?php
 
-namespace App\Transformers\TaskList;
+namespace App\Transformers\LiveComment;
+;
 
 use Illuminate\Http\Resources\Json\ResourceCollection;
-
-use App\Services\ResponseService;
 use Illuminate\Support\Facades\Auth;
 
-class TaskListResourceCollection extends ResourceCollection
+class LiveCommentResourceCollection extends ResourceCollection
 {
-  /**
+    /**
    * Create a new resource instance.
    *
    * @param  mixed  $resource
@@ -32,7 +31,7 @@ class TaskListResourceCollection extends ResourceCollection
       'status' => true,
       'permission' => Auth::user()->permission,
       'msg'    => 'Listando dados',
-      'url'    => route('tasklist.index')
+      'url'    => route('lives.index')
     ];
   }
 

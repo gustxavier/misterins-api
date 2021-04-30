@@ -1,6 +1,8 @@
 <?php
 namespace App\Services;
 
+use Illuminate\Support\Facades\Auth;
+
 Class ResponseService{
     
   /**
@@ -10,9 +12,12 @@ Class ResponseService{
    */
   public static function default($config = array(),$id = null){
     $route = $config['route'];
+    $permission = Auth::user() ? Auth::user()->permission : '';
+
     switch($config['type']){
       case 'store':
         return [
+          'permission' => $permission,
           'status' => true,
           'msg'    => 'Dado inserido com sucesso',
           'url'    => route($route)
@@ -20,6 +25,7 @@ Class ResponseService{
         break;
       case 'show':
         return [
+          'permission' => $permission,
           'status' => true,
           'msg'    => 'Requisição realizada com sucesso',
           'url'    => $id != null ? route($route,$id) : route($route)
@@ -27,6 +33,7 @@ Class ResponseService{
         break;
       case 'update':
         return [
+          'permission' => $permission,
           'status' => true,
           'msg'    => 'Dados Atualizado com sucesso',
           'url'    => $id != null ? route($route,$id) : route($route)
@@ -34,6 +41,7 @@ Class ResponseService{
         break;
       case 'destroy':
         return [
+          'permission' => $permission,
           'status' => true,
           'msg'    => 'Dado excluido com sucesso',
           'url'    => $id != null ? route($route,$id) : route($route)
@@ -83,5 +91,14 @@ Class ResponseService{
         ],500);
         break;
     }
+  }
+
+  public static function alert($type, $msg){
+    return response()->json([
+      'status' => true,
+      'statusCode' => 200,
+      'alertType'  => $type,
+      'msg'  => $msg,
+    ],200);
   }
 }

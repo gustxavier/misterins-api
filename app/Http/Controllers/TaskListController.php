@@ -24,7 +24,6 @@ class TaskListController extends Controller
      */
     public function index()
     {
-        return json_encode(array('data'=>'index entrou'));
         return new TaskListResourceCollection($this->tasklist->index());
     }
 
