@@ -16,6 +16,9 @@ use Illuminate\Support\Facades\Route;
 
 Route::post('register', 'UserController@store')->name('users.store');
 Route::post('login', 'UserController@login')->name('users.login');
+Route::get('register', 'UserController@show')->name('users.store');
+
+
 
 Route::group(['prefix' => 'v1', 'middleware' => 'jwt.verify'], function () {
   

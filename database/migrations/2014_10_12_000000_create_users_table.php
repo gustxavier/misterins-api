@@ -17,6 +17,9 @@ class CreateUsersTable extends Migration
             $table->increments('id');
             $table->string('name');
             $table->string('email', 191)->unique();
+            $table->string('cpf', 14)->unique();
+            $table->string('facebook', 191);
+            $table->string('instagram', 191);
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->enum('permission', ['admin', 'support', 'user'])->default('user');

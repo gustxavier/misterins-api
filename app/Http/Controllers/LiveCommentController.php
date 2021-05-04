@@ -7,21 +7,14 @@ use App\LiveComment;
 use App\Services\ResponseService;
 use App\Transformers\LiveComment\LiveCommentResource;
 use App\Transformers\LiveComment\LiveCommentResourceCollection;
-use Illuminate\Broadcasting\PrivateChannel;
-use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Http\Request;
 
-class LiveCommentController extends Controller implements ShouldBroadcast
+class LiveCommentController extends Controller
 {
     private $liveComment;
 
     public function __construct(LiveComment $liveComment){
         $this->liveComment = $liveComment;
-    }
-
-    public function broadcastOn()
-    {
-        return new PrivateChannel('orders.'.$this->order->id);
     }
 
     /**

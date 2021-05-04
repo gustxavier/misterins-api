@@ -18,7 +18,7 @@ class User extends Authenticatable implements JWTSubject
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'password',
+        'name', 'email', 'cpf', 'facebook', 'instagram','password',
     ];
 
     /**
@@ -44,6 +44,9 @@ class User extends Authenticatable implements JWTSubject
         return parent::create([
             'name' => $fields['name'],
             'email' => $fields['email'] ,
+            'cpf' => $fields['cpf'] ,
+            'facebook' => $fields['facebook'] ,
+            'instagram' => $fields['instagram'] ,
             'password' => Hash::make($fields['password']),
         ]);
     }

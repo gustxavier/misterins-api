@@ -18,3 +18,11 @@ Route::get('/', function () {
 });
 
 Route::get('/campanha/{slug}', 'CampaignController@redirect')->name('campanha');
+
+Route::get('/message', function () {
+    $message['id'] = "2";
+    $message['user'] = "Juan Perez";
+    $message['message'] =  "Prueba mensaje desde Pusher";
+    event(new App\Events\ChatMessage($message));
+    echo "Success send";
+});
