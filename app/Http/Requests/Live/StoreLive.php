@@ -46,7 +46,7 @@ class StoreLive extends FormRequest
                 'msg'   => 'Ops! Algum campo obrigatório não foi preenchido.',
                 'status' => false,
                 'errors'    => $validator->errors(),
-                'url'    => route('tasks.store')
+                'url'    => route('lives.store')
             ], 403));
        }
     }

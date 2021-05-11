@@ -26,7 +26,9 @@ Route::group(['prefix' => 'v1', 'middleware' => 'jwt.verify'], function () {
     'tasklist'  =>  'TaskListController',
     'tasks'  =>  'TasksController',
     'lives' => 'LiveController',
-    'live-comment' => 'LiveCommentController'
+    'live-comment' => 'LiveCommentController',
+    'copy' => 'CopyController',
+    'partnervideovdi' => 'PartnerVideoVDIController',
   ]);
 
   Route::put('task/close/{id}', 'TasksController@closeTask')->name('tasks.closeTask');

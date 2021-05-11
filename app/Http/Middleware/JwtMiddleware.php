@@ -25,9 +25,9 @@ class JwtMiddleware extends BaseMiddleware
             if ($e instanceof \Tymon\JWTAuth\Exceptions\TokenInvalidException){
                 return response()->json(['message' => 'Token inválido.', 'status' => 401]);
             }else if ($e instanceof \Tymon\JWTAuth\Exceptions\TokenExpiredException){
-                return response()->json(['message' => 'Token expirado', 'status' => 498]);
+                return response()->json(['message' => 'Sessão expirada. Faça o Login novamente', 'status' => 498]);
             }else{
-                return response()->json(['message' => 'Token não encontrado', 'status' => 401]);
+                return response()->json(['message' => 'Sessão não encontrada. Realize o login novamente', 'status' => 401]);
             }
         }
         return $next($request);

@@ -8,17 +8,15 @@ use App\Services\ResponseService;
 use GuzzleHttp\Client;
 use Illuminate\Http\Request;
 use App\Transformers\User\UserResource;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Validator;
-use PhpParser\Node\Expr\Cast\Object_;
-use SebastianBergmann\Type\ObjectType;
 
 class UserController extends Controller
 {
     private $user;
+    private $product_o_socio;
 
     public function __construct(User $user){
         $this->user = $user;
+        $this->product_o_socio = "1442311";
     }
 
     /**
@@ -55,12 +53,10 @@ class UserController extends Controller
             ]);
 
             $data = json_decode($response->getBody());
-
-            // Recupera a lista de todos os subinscritos que estão ativos no curso com ID 1406204 (Mister Mind)
-            $response = $client->request('GET', 'https://api-hot-connect.hotmart.com/subscriber/rest/v2',[
+            // Recupera a lista de todos os affiliados que estão ativos no curso com ID 1406204 (Mister Mind)
+            $response = $client->request('GET', 'https://api-hot-connect.hotmart.com/reports/rest/v2/history',[
                 'query' => array(
-                    'product_id' => 1406204,
-                    'status' => 'ACTIVE',
+                    'productId' => "1442311"
                 ),
                 'headers' => array(
                     'Content-Type' => 'application/json',
@@ -70,12 +66,11 @@ class UserController extends Controller
             ]);
 
             $response = json_decode($response->getBody()); 
-            
             $find = false;
 
             // Laço para verificar se o email que está tentando se cadastrar existe na hotmart
             foreach($response->data as $value){
-                if($value->subscriber->email == $request->input('email')){
+                if($value->buyer->email == $request->input('email')){
                     $user = $this
                     ->user
                     ->create($request->all());

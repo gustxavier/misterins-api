@@ -8,9 +8,10 @@ use Illuminate\Support\Facades\Hash;
 use Faker\Provider\pt_BR\Person;
 
 $factory->define(User::class, function (Faker $faker) {
+    $personFaker = new Person($faker);
     return [
         'name' => $faker->name,
-        'cpf' => $faker->unique()->cpf,
+        'cpf' => $personFaker->cpf(),
         'facebook' => $faker->sentence,
         'instagram' => $faker->sentence,
         'email' => $faker->unique()->safeEmail,

@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Transformers\User;
+namespace App\Transformers\PartnerVideoVDI;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 use App\Services\ResponseService;
 
-class UserResource extends JsonResource
+class PartnerVideoVDIResource extends JsonResource
 {
     /**
      * @var
@@ -34,13 +34,10 @@ class UserResource extends JsonResource
      */
     public function toArray($request)
     {
-      
         return [
             'id' => $this->id,
-            'name' => $this->name,
-            'email' => $this->email,
-            'permission' => $this->permission,
-            'password' => '*********'
+            'title' => $this->title,
+            'path' => $this->path,         
         ];
     }
 

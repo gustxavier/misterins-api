@@ -58,6 +58,14 @@ Class ResponseService{
   public static function exception($route,$id = null,$e)
   {
     switch($e->getCode()){
+      case -401:
+        return response()->json([
+          'status' => false,
+          'statusCode' => 401,
+          'error'  => $e->getMessage(),
+          'url'    => $id != null ? route($route,$id) : route($route)
+        ],401);
+        break;
       case -403:
         return response()->json([
           'status' => false,

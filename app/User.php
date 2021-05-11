@@ -53,7 +53,7 @@ class User extends Authenticatable implements JWTSubject
 
     public function login($credentials){
         if (!$token = JWTAuth::attempt($credentials, ['exp' => Carbon::now()->addDays(1)->timestamp])) {
-            throw new \Exception('Credencias incorretas, verifique-as e tente novamente.', -404);
+            throw new \Exception('Credencias incorretas, verifique-as e tente novamente.', -401);
         }
         return $token;
     }

@@ -1,13 +1,13 @@
 <?php
 
-namespace App\Http\Requests\LiveComment;
+namespace App\Http\Requests\Copy;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Http\Exceptions\HttpResponseException;
 
-class StoreLiveComment extends FormRequest
+class StoreCopy extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -27,9 +27,8 @@ class StoreLiveComment extends FormRequest
     public function rules()
     {
         return [
-            'user_id'      => 'required',
-            'live_id'      => 'required',
-            'comment'      => 'required',
+            'title'      => 'required',
+            'important_text'      => 'required',
         ];
     }
 
@@ -47,8 +46,8 @@ class StoreLiveComment extends FormRequest
                 'msg'   => 'Ops! Algum campo obrigatório não foi preenchido.',
                 'status' => false,
                 'errors'    => $validator->errors(),
-                'url'    => route('live-comment.store')
+                'url'    => route('copy.store')
             ], 403));
-       }
+        }
     }
 }

@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Transformers\User;
+namespace App\Transformers\Copy;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 use App\Services\ResponseService;
 
-class UserResource extends JsonResource
+class CopyResource extends JsonResource
 {
     /**
      * @var
@@ -34,13 +34,11 @@ class UserResource extends JsonResource
      */
     public function toArray($request)
     {
-      
         return [
             'id' => $this->id,
-            'name' => $this->name,
-            'email' => $this->email,
-            'permission' => $this->permission,
-            'password' => '*********'
+            'title' => $this->title,
+            'important_text' => $this->important_text,            
+            'description' => $this->description            
         ];
     }
 
