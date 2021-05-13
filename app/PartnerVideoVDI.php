@@ -6,10 +6,14 @@ use Illuminate\Database\Eloquent\Model;
 
 class PartnerVideoVDI extends Model
 {
-    protected $fillable = ['title','path'];
+    protected $fillable = ['title','path', 'type'];
 
     public function index(){
         return  $this->get();
+    }
+
+    public function getVideoByType($type){
+        return $this->where('type', $type)->get();
     }
 
     public function store($fields)
@@ -40,10 +44,5 @@ class PartnerVideoVDI extends Model
         $partnerVideoVDI = $this->show($id);
         $partnerVideoVDI->delete();
         return $partnerVideoVDI->delete();
-    }
-
-    public function partnerVideoVDI()
-    {
-        return $this->belongsTo('App\PartnerVideoVDI', 'id');
     }
 }

@@ -28,7 +28,7 @@ class StorePartnerVideoVDI extends FormRequest
     {
         return [
             'title'      => 'required',
-            'path'      => 'required',
+            'type'      => 'required',
         ];
     }
 

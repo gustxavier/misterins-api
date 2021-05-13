@@ -21,7 +21,7 @@ Route::get('register', 'UserController@show')->name('users.store');
 
 
 Route::group(['prefix' => 'v1', 'middleware' => 'jwt.verify'], function () {
-  
+
   Route::apiResources([
     'tasklist'  =>  'TaskListController',
     'tasks'  =>  'TasksController',
@@ -31,6 +31,8 @@ Route::group(['prefix' => 'v1', 'middleware' => 'jwt.verify'], function () {
     'partnervideovdi' => 'PartnerVideoVDIController',
   ]);
 
+  Route::get('videovdi/getByType/{type}', 'PartnerVideoVDIController@getByType')->name('partnervideovdi.getByType');
+  Route::get('videovdi/downloadVideo/{id}', 'PartnerVideoVDIController@downloadVideo')->name('partnervideovdi.downloadVideo');
   Route::put('task/close/{id}', 'TasksController@closeTask')->name('tasks.closeTask');
   Route::get('list/tasks/{id}', 'TasksController@tasksByList')->name('tasks.tasksByList');
   Route::get('live-comment/live/{id}', 'LiveCommentController@getCommentByLive')->name('live-comment.commentByLive');
