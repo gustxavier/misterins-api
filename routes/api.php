@@ -37,4 +37,5 @@ Route::group(['prefix' => 'v1', 'middleware' => 'jwt.verify'], function () {
   Route::get('list/tasks/{id}', 'TasksController@tasksByList')->name('tasks.tasksByList');
   Route::get('live-comment/live/{id}', 'LiveCommentController@getCommentByLive')->name('live-comment.commentByLive');
   Route::post('logout', 'UserController@logout')->name('users.logout');
+  Route::get('users/isLogged', 'UserController@isLogged')->name('users.isLogged');
 });

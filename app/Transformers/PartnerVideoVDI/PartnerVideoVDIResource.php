@@ -38,6 +38,7 @@ class PartnerVideoVDIResource extends JsonResource
             'id' => $this->id,
             'title' => $this->title,
             'path' => $this->path,            
+            'file_name' => $this->file_name,            
             'type' => $this->type            
         ];
     }

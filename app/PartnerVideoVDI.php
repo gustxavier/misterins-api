@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class PartnerVideoVDI extends Model
 {
-    protected $fillable = ['title','path', 'type'];
+    protected $fillable = ['title','path', 'type','file_name', 'file_extension'];
 
     public function index(){
         return  $this->get();

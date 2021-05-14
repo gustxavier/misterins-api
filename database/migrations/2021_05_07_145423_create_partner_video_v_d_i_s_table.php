@@ -17,6 +17,8 @@ class CreatePartnerVideoVDISTable extends Migration
             $table->id();
             $table->string('title');
             $table->string('path');
+            $table->string('file_name');
+            $table->string('file_extension');
             $table->enum('type',array('feed','story'));
             $table->timestamps();
         });

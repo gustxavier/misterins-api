@@ -131,4 +131,8 @@ class UserController extends Controller
         return response(['status' => true,'msg' => 'Deslogado com sucesso'], 200);
     }
 
+    public function isLogged() {
+        return true;
+    }
+
 }

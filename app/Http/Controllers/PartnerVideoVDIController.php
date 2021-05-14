@@ -51,10 +51,18 @@ class PartnerVideoVDIController extends Controller
             }
 
             $video = $request->get('archive');
-            $fileName = time() . '_' . date('Ymd-His') . '.' . explode('/', explode(':', substr($video, 0, strpos($video, ';')))[1])[1];
-
-            Storage::disk('local')->put('public/' . $path . $fileName, file_get_contents($video));
-            $request->merge(['path' => storage_path() . '/app/public/' . $path . $fileName]);
+            $fileExtension = explode('/', explode(':', substr($video, 0, strpos($video, ';')))[1])[1];
+            $fileNameStorage = time() . '_' . date('Ymd-His') . '.' . $fileExtension;
+            
+            Storage::disk('public')->put($path . $fileNameStorage, file_get_contents($video));
+            
+            $request->merge(
+                array(
+                    'path' => $path . $fileNameStorage,
+                    'file_name' => str_replace(" ", "_",$request->input('title')) .'.'. $fileExtension,
+                    'file_extension' => $fileExtension
+                )
+            );
 
             $data = $this
                 ->partnerVideoVDI
@@ -128,7 +136,7 @@ class PartnerVideoVDIController extends Controller
             $data = $this
                 ->partnerVideoVDI
                 ->getVideoByType($type);
-                // return $data;
+            // return $data;
         } catch (\Throwable | \Exception $e) {
             return ResponseService::exception('partnervideovdi.getByType', $type, $e);
         }
@@ -145,12 +153,7 @@ class PartnerVideoVDIController extends Controller
                 ->partnerVideoVDI
                 ->show($id);
 
-            $headers = array(
-                'Content-Type: application/video',
-                'Content-Disposition: attachment'
-            );
-
-            return response()->file(public_path() . $data->path, $headers);
+            return response()->download(public_path('storage/' . $data->path));
         } catch (\Throwable | \Exception $e) {
             return ResponseService::exception('partnervideovdi.downloadVideo', $id, $e);
         }
