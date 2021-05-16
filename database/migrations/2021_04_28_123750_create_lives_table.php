@@ -14,7 +14,7 @@ class CreateLivesTable extends Migration
     public function up()
     {
         Schema::create('lives', function (Blueprint $table) {
-            $table->id();
+            $table->increments('id');
             $table->string('title');
             $table->longText('url');
             $table->longText('description')->nullable();
