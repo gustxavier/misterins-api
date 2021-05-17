@@ -17,7 +17,7 @@ class CreateCopiesTable extends Migration
             $table->id();
             $table->string('title');
             $table->longText('important_text');
-            $table->longText('description');
+            $table->longText('description')->nullable();
             $table->timestamps();
         });
     }

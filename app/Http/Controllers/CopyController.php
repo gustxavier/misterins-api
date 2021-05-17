@@ -39,7 +39,7 @@ class CopyController extends Controller
         try{        
             $data = $this
             ->copy
-            ->store($request->all());
+            ->storeCopy($request->all());
         }catch(\Throwable|\Exception $e){
             return ResponseService::exception('copy.store',null,$e);
         }

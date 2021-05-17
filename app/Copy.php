@@ -6,13 +6,13 @@ use Illuminate\Database\Eloquent\Model;
 
 class Copy extends Model
 {
-    protected $fillable = ['title','important_text','description'];
+    protected $fillable = ['title','important_text'];
 
     public function index(){
         return  $this->get();
     }
 
-    public function store($fields)
+    public function storeCopy($fields)
     {
         return $this->create($fields); 
     }

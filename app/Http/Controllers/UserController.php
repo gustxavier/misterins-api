@@ -16,7 +16,7 @@ class UserController extends Controller
 
     public function __construct(User $user){
         $this->user = $user;
-        $this->product_o_socio = "1442311";
+        $this->product_o_socio = "448026";
     }
 
     /**
@@ -56,7 +56,7 @@ class UserController extends Controller
             // Recupera a lista de todos os affiliados que estão ativos no curso com ID 1406204 (Mister Mind)
             $response = $client->request('GET', 'https://api-hot-connect.hotmart.com/reports/rest/v2/history',[
                 'query' => array(
-                    'productId' => "1442311"
+                    'productId' => $this->product_o_socio
                 ),
                 'headers' => array(
                     'Content-Type' => 'application/json',
