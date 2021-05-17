@@ -15,6 +15,6 @@ $factory->define(User::class, function (Faker $faker) {
         'facebook' => $faker->sentence,
         'instagram' => $faker->sentence,
         'email' => $faker->unique()->safeEmail,
-        'password' => Hash::make('12345') // password
+        'password' => Hash::make('*m15t3r1n5%$#') // password
     ];
 });
