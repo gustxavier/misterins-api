@@ -57,7 +57,7 @@ class UserController extends Controller
             $response = $client->request('GET', 'https://api-hot-connect.hotmart.com/reports/rest/v2/history',[
                 'query' => array(
                     'productId' => $this->product_o_socio,
-                    'email' => $request->input('email')
+                    'email' => mb_strtolower(trim($request->input('email')))
                 ),
                 'headers' => array(
                     'Content-Type' => 'application/json',
@@ -66,16 +66,17 @@ class UserController extends Controller
                 'verify'  => false,
             ]);
 
-            $response = json_decode($response->getBody());
-            // return json_encode(($response->summary));
-            $find = false;
+            $res = json_decode($response->getBody());
 
-            if(!empty($response->summary)){
+            $find = false;            
+            $find2 = false;
+
+            if(!empty($res->summary)){
                 $find = true;
                 $user = $this
                         ->user
                         ->create($request->all());
-                $find2 = true;
+                $find = true;
             }
             
             if(!$find){
@@ -83,7 +84,7 @@ class UserController extends Controller
                 $response = $client->request('GET', 'https://api-hot-connect.hotmart.com/reports/rest/v2/history',[
                     'query' => array(
                         'productId' => '1442311',
-                        'email' => $request->input('email')
+                        'email' => mb_strtolower(trim($request->input('email')))
                     ),
                     'headers' => array(
                         'Content-Type' => 'application/json',
@@ -92,8 +93,8 @@ class UserController extends Controller
                     'verify'  => false,
                 ]);
 
-                $response = json_decode($response->getBody()); 
-                $find2 = false;
+                $response = json_decode($response->getBody());                 
+                
                 if(!empty($response->summary)){
                     $find = true;
                     $user = $this
@@ -102,9 +103,6 @@ class UserController extends Controller
                     $find2 = true;
                 }
 
-                if(!$find2){
-                    return ResponseService::alert('warning','Você não tem o curso na Hotmart que permite você ter acesso à nosso sistema!'); 
-                }
             }
 
             if(!$find && !$find2){
