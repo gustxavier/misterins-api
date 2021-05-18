@@ -111,7 +111,7 @@ class UserController extends Controller
                 }
             }
 
-            if(!$find){
+            if(!$find && !$find2){
                 return ResponseService::alert('warning','Você não tem o curso na Hotmart que permite você ter acesso à nosso sistema!'); 
             }
             
