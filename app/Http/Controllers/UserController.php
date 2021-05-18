@@ -80,6 +80,35 @@ class UserController extends Controller
             }
 
             if(!$find){
+                $data = json_decode($response->getBody());
+                // Recupera a lista de todos os affiliados que estão ativos no curso com ID 1406204 (Mister Mind)
+                $response = $client->request('GET', 'https://api-hot-connect.hotmart.com/reports/rest/v2/history',[
+                    'query' => array(
+                        'productId' => '1442311'
+                    ),
+                    'headers' => array(
+                        'Content-Type' => 'application/json',
+                        'Authorization' => 'Bearer '.$data->access_token,
+                    ),
+                    'verify'  => false,
+                ]);
+
+                $response = json_decode($response->getBody()); 
+                $find2 = false;
+
+                // Laço para verificar se o email que está tentando se cadastrar existe na hotmart
+                foreach($response->data as $value){
+                    if($value->buyer->email == $request->input('email')){
+                        $user = $this
+                        ->user
+                        ->create($request->all());
+                        $find2 = true;
+                        break;
+                    }
+                }
+            }
+
+            if(!$find || !$find2){
                 return ResponseService::alert('warning','Você não tem o curso na Hotmart que permite você ter acesso à nosso sistema!'); 
             }
             
