@@ -106,9 +106,12 @@ class UserController extends Controller
                         break;
                     }
                 }
+                if(!$find2){
+                    return ResponseService::alert('warning','Você não tem o curso na Hotmart que permite você ter acesso à nosso sistema!'); 
+                }
             }
 
-            if(!$find || !$find2){
+            if(!$find){
                 return ResponseService::alert('warning','Você não tem o curso na Hotmart que permite você ter acesso à nosso sistema!'); 
             }
             
