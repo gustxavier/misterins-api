@@ -12,6 +12,10 @@ class LiveComment extends Model
         return  $this->get();
     }
 
+    public function getByUserId($user_id){        
+        return  $this->where('user_id', '=',$user_id)->get();
+    }
+
     public function store($fields)
     {
         return $this->create($fields); 
