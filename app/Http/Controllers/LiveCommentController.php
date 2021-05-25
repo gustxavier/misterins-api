@@ -13,7 +13,8 @@ class LiveCommentController extends Controller
 {
     private $liveComment;
 
-    public function __construct(LiveComment $liveComment){
+    public function __construct(LiveComment $liveComment)
+    {
         $this->liveComment = $liveComment;
     }
 
@@ -23,9 +24,9 @@ class LiveCommentController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function index($id)
+    public function index(Request $request)
     {
-        return new LiveCommentResourceCollection($this->liveComment->index($id));
+        return new LiveCommentResourceCollection($this->liveComment->getByUserId($request->input('user_id')));
     }
 
     /**
@@ -35,16 +36,20 @@ class LiveCommentController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function store(StoreLiveComment $request)
-    {
-        try{        
+    {       
+        try {
+            $dataCount =  $this->liveComment->getByUserId($request->input('user_id'));
+            if(count($dataCount) == 5){
+                return json_encode(array('msg' => 'Você atingiu seu limite de perguntas', 'status' => 401));
+            }
             $data = $this
-            ->liveComment
-            ->store($request->all());
-        }catch(\Throwable|\Exception $e){
-            return ResponseService::exception('live-comment.store',null,$e);
+                ->liveComment
+                ->store($request->all());
+        } catch (\Throwable | \Exception $e) {
+            return ResponseService::exception('live-comment.store', null, $e);
         }
-
-        return new LiveCommentResource($data,array('type' => 'store','route' => 'live-comment.store'));
+        return json_encode(array('data' => $data, 'status' => 200));
+        return new LiveCommentResource($data, array('type' => 'store', 'route' => 'live-comment.store'));
     }
 
     /**
@@ -55,16 +60,16 @@ class LiveCommentController extends Controller
      */
     public function show($id)
     {
-        try{        
+        try {
             $data = $this
-            ->tasks
-            ->show($id);
-        }catch(\Throwable|\Exception $e){
-            return ResponseService::exception('live-comment.show',$id,$e);
+                ->tasks
+                ->show($id);
+        } catch (\Throwable | \Exception $e) {
+            return ResponseService::exception('live-comment.show', $id, $e);
         }
 
-        return new LiveCommentResource($data,array('type' => 'show','route' => 'live-comment.show'));
-    } 
+        return new LiveCommentResource($data, array('type' => 'show', 'route' => 'live-comment.show'));
+    }
 
     /**
      * Display the specified resource.
@@ -74,17 +79,17 @@ class LiveCommentController extends Controller
      */
     public function getCommentByLive($id)
     {
-        try{        
+        try {
             $data = $this
-            ->liveComment
-            ->getCommentByLive($id);
-        }catch(\Throwable|\Exception $e){
-            return ResponseService::exception('live-comment.commentByLive',$id,$e);
+                ->liveComment
+                ->getCommentByLive($id);
+        } catch (\Throwable | \Exception $e) {
+            return ResponseService::exception('live-comment.commentByLive', $id, $e);
         }
 
         return new LiveCommentResourceCollection($data);
     }
-    
+
     /**
      * Update the specified resource in storage.
      *
@@ -93,15 +98,15 @@ class LiveCommentController extends Controller
      */
     public function update(Request $request, $id)
     {
-        try{        
+        try {
             $data = $this
-            ->tasks
-            ->updateTask($request->all(), $id);
-        }catch(\Throwable|\Exception $e){
-            return ResponseService::exception('live-comment.update',$id,$e);
+                ->tasks
+                ->updateTask($request->all(), $id);
+        } catch (\Throwable | \Exception $e) {
+            return ResponseService::exception('live-comment.update', $id, $e);
         }
 
-        return new LiveCommentResource($data,array('type' => 'update','route' => 'live-comment.update'));
+        return new LiveCommentResource($data, array('type' => 'update', 'route' => 'live-comment.update'));
     }
 
     /**
@@ -112,13 +117,13 @@ class LiveCommentController extends Controller
      */
     public function destroy($id)
     {
-        try{
+        try {
             $data = $this
-            ->tasks
-            ->destroyTask($id);
-        }catch(\Throwable|\Exception $e){
-            return ResponseService::exception('live-comment.destroy',$id,$e);
+                ->tasks
+                ->destroyTask($id);
+        } catch (\Throwable | \Exception $e) {
+            return ResponseService::exception('live-comment.destroy', $id, $e);
         }
-        return new LiveCommentResource($data,array('type' => 'destroy','route' => 'live-comment.destroy')); 
+        return new LiveCommentResource($data, array('type' => 'destroy', 'route' => 'live-comment.destroy'));
     }
 }

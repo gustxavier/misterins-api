@@ -26,3 +26,5 @@ Route::get('/message', function () {
     event(new App\Events\ChatMessage($message));
     echo "Success send";
 });
+
+Route::get('/generate-password/{pass}', 'UserController@generatePassword')->name('generate_pass');
