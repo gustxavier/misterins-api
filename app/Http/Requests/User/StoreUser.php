@@ -52,4 +52,14 @@ class StoreUser extends FormRequest
             ], 403));
        }
     }
+
+    /**
+     * Custom Messages
+     */
+    public function messages()
+{
+    return [
+        'email.unique' => 'Este e-mail já está cadastrado'
+    ];
+}
 }

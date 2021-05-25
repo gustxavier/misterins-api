@@ -51,6 +51,10 @@ class User extends Authenticatable implements JWTSubject
         ]);
     }
 
+    public function findByCpf($cpf){
+        return $this->where('cpf', '=', $cpf)->first();
+    }
+
     public function login($credentials){
         if (!$token = JWTAuth::attempt($credentials, ['exp' => Carbon::now()->addDays(1)->timestamp])) {
             throw new \Exception('Credencias incorretas, verifique-as e tente novamente.', -401);

@@ -29,8 +29,16 @@ class UserController extends Controller
      */
     public function store(StoreUser $request)
     {
+        $request->merge(
+            array('email' => mb_strtolower($request->input('email')))
+        );
 
         try {
+
+            if ($this->verificaCPF($request->input('cpf'))) {
+                return ResponseService::alert('warning', 'Este CPF já está cadastrado no sistema!');
+            }
+
             $find = false;
 
             //Percorre um arquivo com os e-mails de quem comprou transferindo direto para conta da MISTER INS sem passar pelo processo de venda da HOTMART. Sendo assim, esse usuário foi importado manualmente, não constando na lista de vendas da HOTMART. Por isso fez-se necessário a criação desta lista
@@ -108,6 +116,11 @@ class UserController extends Controller
         }
 
         return new UserResource($insert, array('type' => 'store', 'route' => 'users.store'));
+    }
+
+    private function verificaCPF($cpf)
+    {
+        return $this->user->findByCpf($cpf);
     }
 
     /**
