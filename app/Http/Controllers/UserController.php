@@ -8,6 +8,7 @@ use App\Services\ResponseService;
 use GuzzleHttp\Client;
 use Illuminate\Http\Request;
 use App\Transformers\User\UserResource;
+use App\UserHasCourse;
 use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
@@ -15,6 +16,12 @@ class UserController extends Controller
     private $user;
     const HOTMART_PARCEIRO_MISTERINS = 1442311;
     const HOTMART_PROJX_PARCEIRO_MISTERINS = 448026;
+    const MISTER_MIND = 123;
+    const MISTERINS_COUSERS = [
+        self::HOTMART_PARCEIRO_MISTERINS,
+        self::HOTMART_PROJX_PARCEIRO_MISTERINS,
+        self::MISTER_MIND
+    ];
 
     public function __construct(User $user)
     {
@@ -96,20 +103,23 @@ class UserController extends Controller
 
                 //Percorre o array buscando pelo ID dos cursos que o usuário pode ter
                 if (!empty($res->data)) {
+                    $find = true;
+                    $insert = $this
+                    ->user
+                    ->create($request->all());
+
+                    $courses = array();
+
                     foreach ($res->data as $value) {
-                        if ($value->product->id == self::HOTMART_PARCEIRO_MISTERINS || $value->product->id == self::HOTMART_PROJX_PARCEIRO_MISTERINS) {
-                            $find = true;
-                            $insert = $this
-                                ->user
-                                ->create($request->all());
-                            break;
-                        }
+                        $courses[] = array('user_id' => $insert->id, 'course_id' => $value->product->id);
                     }
+                    
+                    UserHasCourse::insert($courses);
                 }
             }
 
             if (!$find && $request->input('email') != 'gustasv00@gmail.com') {
-                return ResponseService::alert('warning', 'Você não tem o curso na Hotmart que permite você ter acesso à nosso sistema!');
+                return ResponseService::alert('warning', 'Você não tem um curso na Hotmart que permita você ter acesso ao nosso sistema!');
             }
         } catch (\Throwable | \Exception $e) {
             return ResponseService::exception('users.store', null, $e);
