@@ -6,11 +6,11 @@ use Illuminate\Database\Eloquent\Model;
 
 class Live extends Model
 {
-    protected $fillable = ['title', 'url', 'description'];
+    protected $fillable = ['title', 'url', 'description', 'course_id'];
 
     public function index()
     {
-        return $this->get();
+        return $this->leftjoin('courses', 'lives.course_id', '=', 'courses.id')->get();
     }
 
     public function insert($fields)
@@ -20,8 +20,9 @@ class Live extends Model
 
     public function show($id)
     {
-        $show = $this->find($id);
-
+        $show = $this->select('lives.*','courses.hotmart_id')->leftjoin('courses', 'lives.course_id', '=', 'courses.id')
+        ->find($id);
+ 
         if (!$show) {
             throw new \Exception('Nada Encontrado', -404);
         }

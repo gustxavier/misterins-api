@@ -62,7 +62,7 @@ class LiveController extends Controller
         }catch(\Throwable|\Exception $e){
             return ResponseService::exception('lives.show',$id,$e);
         }
-
+        // return $data;
         return new LiveResource($data,array('type' => 'show','route' => 'lives.show'));
     }
 

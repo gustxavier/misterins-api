@@ -38,7 +38,9 @@ class LiveResource extends JsonResource
             'id' => $this->id,
             'title' => $this->title,
             'url' => $this->url,            
-            'description' => $this->description            
+            'description' => $this->description,           
+            'course_id' => $this->course_id,         
+            'hotmart_id' => $this->hotmart_id          
         ];
     }
 

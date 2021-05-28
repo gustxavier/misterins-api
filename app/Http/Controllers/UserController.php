@@ -150,15 +150,29 @@ class UserController extends Controller
         } catch (\Throwable | \Exception $e) {
             return ResponseService::exception('users.login', null, $e);
         }
+        
+        $user = User::where('email', '=',  $credentials['email'])
+            ->leftJoin('user_has_courses', 'users.id', '=', 'user_has_courses.user_id')
+            ->first();
 
-        $user = User::where('email', '=',  $credentials['email'])->first();
+        $userCourse = UserHasCourse::select('courses.hotmart_id')
+            ->where('user_id', '=' , $user->id)
+            ->leftjoin('courses', 'user_has_courses.course_id', '=', 'courses.id')
+            ->get();
+
+        $courses = '';
+
+        foreach ($userCourse as $key => $value) {
+            $courses .= $value['hotmart_id'].',';
+        }
 
         return response()->json(array(
             'token' => $token,
             'id' => $user->id,
             'username' => $user->name,
             'useremail' => $user->email,
-            'permission' => $user->permission
+            'permission' => $user->permission,
+            'courses' => $courses
         ));
     }
 
