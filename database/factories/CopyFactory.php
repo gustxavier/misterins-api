@@ -9,6 +9,5 @@ $factory->define(Copy::class, function (Faker $faker) {
     return [
         'title' => $faker->sentence,
         'important_text' => $faker->sentence,
-        'description' => $faker->sentence,
     ];
 });
