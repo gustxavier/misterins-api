@@ -2,14 +2,17 @@
 
 namespace App\Http\Controllers;
 
+use App\Course;
 use App\User;
 use App\Http\Requests\User\StoreUser;
 use App\Services\ResponseService;
 use GuzzleHttp\Client;
 use Illuminate\Http\Request;
 use App\Transformers\User\UserResource;
+use App\Transformers\User\UserResourceCollection;
 use App\UserHasCourse;
 use Illuminate\Support\Facades\Hash;
+use MultidimensionalArrayService;
 
 class UserController extends Controller
 {
@@ -28,6 +31,12 @@ class UserController extends Controller
         $this->user = $user;
     }
 
+
+    public function index()
+    {
+        // return $this->user->index();
+        return new UserResourceCollection($this->user->index());
+    }
     /**
      * Store a newly created resource in storage.
      *
@@ -36,6 +45,7 @@ class UserController extends Controller
      */
     public function store(StoreUser $request)
     {
+        
         $request->merge(
             array('email' => mb_strtolower($request->input('email')))
         );
@@ -56,6 +66,10 @@ class UserController extends Controller
                 $insert = $this
                     ->user
                     ->create($request->all());
+                    UserHasCourse::create(array(
+                        'user_id' => $insert->id,
+                        'course_id' => 9
+                    ));    
             }
 
             // Se não encontrar, busca na API da HOTMART
@@ -109,11 +123,22 @@ class UserController extends Controller
                     ->create($request->all());
 
                     $courses = array();
+                    $allCourse = Course::all();
 
                     foreach ($res->data as $value) {
-                        $courses[] = array('user_id' => $insert->id, 'course_id' => $value->product->id);
-                    }
-                    
+
+                        foreach ($allCourse as $val) {
+                            
+                            if($val->hotmart_id == $value->product->id){
+                                $courses[] = array(
+                                    'user_id' => $insert->id, 
+                                    'course_id' => $val->id,
+                                    'created_at' => date('Y-m-d H:i:s'),
+                                    'updated_at' => date('Y-m-d H:i:s')
+                                );
+                            }
+                        }
+                    }        
                     UserHasCourse::insert($courses);
                 }
             }

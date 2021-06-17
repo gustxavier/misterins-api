@@ -15,10 +15,8 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::post('register', 'UserController@store')->name('users.store');
-Route::post('login', 'UserController@login')->name('users.login');
 Route::get('register', 'UserController@show')->name('users.store');
-
-
+Route::post('login', 'UserController@login')->name('users.login');
 
 Route::group(['prefix' => 'v1', 'middleware' => 'jwt.verify'], function () {
 
@@ -29,6 +27,8 @@ Route::group(['prefix' => 'v1', 'middleware' => 'jwt.verify'], function () {
     'live-comment' => 'LiveCommentController',
     'copy' => 'CopyController',
     'partnervideovdi' => 'PartnerVideoVDIController',
+    'courses' => 'CourseController',
+    'users' => 'UserController',
   ]);
 
   Route::get('videovdi/getByType/{type}', 'PartnerVideoVDIController@getByType')->name('partnervideovdi.getByType');
