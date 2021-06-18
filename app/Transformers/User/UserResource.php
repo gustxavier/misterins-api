@@ -39,6 +39,9 @@ class UserResource extends JsonResource
             'id' => $this->id,
             'name' => $this->name,
             'email' => $this->email,
+            'cpf' => $this->cpf,
+            'instagram' => $this->instagram,
+            'facebook' => $this->facebook,
             'permission' => $this->permission,
             'password' => '*********'
         ];

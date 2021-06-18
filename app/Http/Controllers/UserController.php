@@ -229,4 +229,23 @@ class UserController extends Controller
     {
         return Hash::make($pass);
     }
+
+    /**
+     * Display the specified resource.
+     *
+     * @param  \App\Copy  $copy
+     * @return \Illuminate\Http\Response
+     */
+    public function show($id)
+    {
+        try{        
+            $data = $this
+            ->user
+            ->show($id);
+        }catch(\Throwable|\Exception $e){
+            return ResponseService::exception('users.show',$id,$e);
+        }
+
+        return new UserResource($data,array('type' => 'show','route' => 'users.show'));
+    } 
 }

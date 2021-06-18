@@ -43,6 +43,16 @@ class User extends Authenticatable implements JWTSubject
         return $this->get();
     }
 
+    public function show($id){
+        $show = $this->find($id);
+ 
+        if (!$show) {
+            throw new \Exception('Nada Encontrado', -404);
+        }
+
+        return $show;
+    }
+
     public function create($fields)
     {
         return parent::create([
