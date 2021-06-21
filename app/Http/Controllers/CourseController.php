@@ -4,8 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Course;
 use App\Services\ResponseService;
-use App\Transformers\Copy\CourseResource;
+use App\Transformers\Course\CourseResource;
 use App\Transformers\Course\CourseResourceCollection;
+use App\UserHasCourse;
 use Illuminate\Http\Request;
 
 class CourseController extends Controller
@@ -44,5 +45,16 @@ class CourseController extends Controller
         }
 
         return new CourseResource($data,array('type' => 'update','route' => 'courses.update'));
+    }
+
+    public function getCoursesByUser($userID){
+
+        $userHasCourse = new UserHasCourse;
+
+        $data = array(
+            'all' => $this->course->index()->toArray(),
+            'checked' => $userHasCourse->getCoursesByUser($userID)->toArray()
+        );
+        return $data;
     }
 }

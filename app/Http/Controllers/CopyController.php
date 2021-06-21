@@ -74,6 +74,7 @@ class CopyController extends Controller
      */
     public function update(Request $request, $id)
     {
+        return json_encode('oi');
         try{        
             $data = $this
             ->copy

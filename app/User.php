@@ -40,7 +40,7 @@ class User extends Authenticatable implements JWTSubject
     ];
 
     public function index(){
-        return $this->get();
+        return $this->orderBy('name')->get();
     }
 
     public function show($id){
@@ -63,6 +63,25 @@ class User extends Authenticatable implements JWTSubject
             'instagram' => $fields['instagram'] ,
             'password' => Hash::make($fields['password']),
         ]);
+    }
+
+    public function updateUser($fields, $id)
+    {
+        unset($fields['password']);
+
+        $user = $this->show($id);
+        $user->update($fields);
+
+        return $user;
+    }
+
+    public function updateNewPassword($password, $id)
+    {
+
+        $user = $this->show($id);
+        $user->update(array('password' => Hash::make($password)));
+
+        return $user;
     }
 
     public function findByCpf($cpf){

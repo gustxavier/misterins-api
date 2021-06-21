@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Transformers\Copy;
+namespace App\Transformers\Course;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 use App\Services\ResponseService;

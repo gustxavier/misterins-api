@@ -32,8 +32,8 @@ class Live extends Model
 
     public function updateLive($fields, $id)
     {
+        return $fields; die();
         $live = $this->show($id);
-
         $live->update($fields);
         return $live;
     }

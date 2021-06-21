@@ -18,5 +18,5 @@ class Course extends Model
 
         $course->update($fields);
         return $course;
-    }
+    }   
 }
