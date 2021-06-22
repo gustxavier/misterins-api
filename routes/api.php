@@ -41,6 +41,7 @@ Route::group(['prefix' => 'v1', 'middleware' => 'jwt.verify'], function () {
   // Users
   Route::post('users/checkEmailByMaicoList', 'UserController@checkEmailByMaicoList')->name('users.checkEmailByMaicoList');
   Route::put('users/updatePassword/{user}', 'UserController@updatePassword')->name('users.updatePassword');
+  Route::put('users/updateUserHasCourses/{user}', 'UserController@updateUserHasCourses')->name('users.updateUserHasCourses');
   
   // Courses
   Route::get('courses/getCoursesByUser/{user_id}', 'CourseController@getCoursesByUser')->name('courses.getCoursesByUser');

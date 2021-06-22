@@ -133,5 +133,4 @@ class User extends Authenticatable implements JWTSubject
     public function liveComments(){
         return $this->hasMany('App\LiveComment');
     }
-
 }

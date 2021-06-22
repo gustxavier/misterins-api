@@ -174,13 +174,37 @@ class UserController extends Controller
             $data = $this
             ->user
             ->updateNewPassword($request->input('password'), $id);
-            return $data;
         }catch(\Throwable|\Exception $e){
             return ResponseService::exception('users.updatePassword',$id,$e);
         }
 
         return new UserResource($data,array('type' => 'update','route' => 'users.updatePassword'));
     }
+
+    public function updateUserHasCourses(Request $request, $id){
+        try{        
+            $delete = UserHasCourse::where('user_id', '=', $id)->delete();
+            
+            if($delete){
+                foreach ($request->all() as $value) {
+                    $data[] = [
+                        'user_id' => $id,
+                        'course_id' => $value,
+                        'created_at' => date('Y-m-d H:i:s'),
+                        'updated_at' => date('Y-m-d H:i:s')
+                    ];
+                }
+                UserHasCourse::insert($data);
+            }
+            
+            $data = $this->user->show($id);
+        }catch(\Throwable|\Exception $e){
+            return ResponseService::exception('users.updatePassword',$id,$e);
+        }
+
+        return new UserResource($data,array('type' => 'update','route' => 'users.updatePassword'));
+    }
+        
 
     private function verificaCPF($cpf)
     {
@@ -249,6 +273,11 @@ class UserController extends Controller
         return response(['status' => true, 'msg' => 'Deslogado com sucesso'], 200);
     }
 
+    /**
+     * Retorna uma senha criptografada
+     * 
+     * @param int $pass
+     */
     public function generatePassword($pass)
     {
         return Hash::make($pass);        
