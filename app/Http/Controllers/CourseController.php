@@ -9,6 +9,7 @@ use App\Transformers\Course\CourseResourceCollection;
 use App\UserHasCourse;
 use Illuminate\Http\Request;
 
+
 class CourseController extends Controller
 {
     private $course;
