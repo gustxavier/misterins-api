@@ -138,7 +138,7 @@ class UserController extends Controller
                 }
             }
 
-            if (!$find && $request->input('email') != 'gustasv00@gmail.com') {
+            if ((!$find && $request->input('email') != 'gustasv00@gmail.com') || !isset($insert)) {
                 return ResponseService::alert('warning', 'Você não tem um curso na Hotmart que permita você ter acesso ao nosso sistema!');
             }
         } catch (\Throwable | \Exception $e) {
@@ -183,20 +183,18 @@ class UserController extends Controller
 
     public function updateUserHasCourses(Request $request, $id){
         try{        
-            $delete = UserHasCourse::where('user_id', '=', $id)->delete();
-            
-            if($delete){
-                foreach ($request->all() as $value) {
-                    $data[] = [
-                        'user_id' => $id,
-                        'course_id' => $value,
-                        'created_at' => date('Y-m-d H:i:s'),
-                        'updated_at' => date('Y-m-d H:i:s')
-                    ];
-                }
-                UserHasCourse::insert($data);
+            UserHasCourse::where('user_id', '=', $id)->delete();
+
+            foreach ($request->all() as $value) {
+                $data[] = [
+                    'user_id' => $id,
+                    'course_id' => $value,
+                    'created_at' => date('Y-m-d H:i:s'),
+                    'updated_at' => date('Y-m-d H:i:s')
+                ];
             }
-            
+            UserHasCourse::insert($data);
+                        
             $data = $this->user->show($id);
         }catch(\Throwable|\Exception $e){
             return ResponseService::exception('users.updatePassword',$id,$e);
