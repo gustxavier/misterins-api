@@ -38,6 +38,9 @@ class LiveController extends Controller
      */
     public function store(StoreLive $request)
     {
+
+        return $request;
+
         try{        
             $data = $this->live->insert($request->all());           
         }catch(\Throwable|\Exception $e){
