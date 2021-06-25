@@ -13,7 +13,7 @@ class PartnerVideoVDI extends Model
     }
 
     public function getVideoByType($type){
-        return $this->where('type', $type)->get();
+        return $this->where('type', $type)->orderBy('created_at', 'DESC')->get();
     }
 
     public function store($fields)

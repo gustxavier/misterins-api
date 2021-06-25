@@ -148,11 +148,11 @@ class PartnerVideoVDIController extends Controller
      */
     public function downloadVideo($id)
     {
+        
         try {
             $data = $this
                 ->partnerVideoVDI
                 ->show($id);
-
             return response()->download(public_path('storage/' . $data->path));
         } catch (\Throwable | \Exception $e) {
             return ResponseService::exception('partnervideovdi.downloadVideo', $id, $e);
