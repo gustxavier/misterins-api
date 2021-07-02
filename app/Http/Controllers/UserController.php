@@ -148,6 +148,28 @@ class UserController extends Controller
         return new UserResource($insert, array('type' => 'store', 'route' => 'users.store'));
     }
 
+    public function adminInsert(StoreUser $request){
+        try{   
+            
+            $request->merge(
+                array('email' => mb_strtolower($request->input('email')))
+            );
+            
+    
+            if ($this->verificaCPF($request->input('cpf'))) {
+                return ResponseService::alert('warning', 'Este CPF já está cadastrado no sistema!');
+            }
+
+            $insert = $this
+                ->user
+                ->create($request->all());
+        }catch(\Throwable|\Exception $e){
+            return ResponseService::exception('users.admininsert',null,$e);
+        }
+
+        return new UserResource($this->user->show($insert->id),array('type' => 'store','route' => 'users.admininsert'));
+    }
+
     /**
      * Update the specified resource in storage.
      *
@@ -159,6 +181,7 @@ class UserController extends Controller
             $data = $this
             ->user
             ->updateUser($request->all(), $id);
+
             return $data;
         }catch(\Throwable|\Exception $e){
             return ResponseService::exception('users.update',$id,$e);

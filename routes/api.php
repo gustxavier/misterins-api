@@ -39,6 +39,7 @@ Route::group(['prefix' => 'v1', 'middleware' => ['jwt.verify','throttle:5000,1']
   Route::post('logout', 'UserController@logout')->name('users.logout');
   
   // Users
+  Route::post('users/admininsert', 'UserController@adminInsert')->name('users.admininsert');
   Route::post('users/checkEmailByMaicoList', 'UserController@checkEmailByMaicoList')->name('users.checkEmailByMaicoList');
   Route::put('users/updatePassword/{user}', 'UserController@updatePassword')->name('users.updatePassword');
   Route::put('users/updateUserHasCourses/{user}', 'UserController@updateUserHasCourses')->name('users.updateUserHasCourses');
