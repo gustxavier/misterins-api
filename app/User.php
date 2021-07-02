@@ -54,7 +54,7 @@ class User extends Authenticatable implements JWTSubject
     }
 
     public function create($fields)
-    {
+    {   
         return parent::create([
             'name' => $fields['name'],
             'email' => $fields['email'] ,
