@@ -433,7 +433,7 @@ class UserController extends Controller
             Mail::to('gustasv00@gmail.com')->send(new \App\Mail\ForgotPassword(
                 array(
                     'name' => $user->name,
-                    'link' => 'https://localhost:3000/recouver/'.$hash
+                    'link' => 'http://localhost:3000/recouver/'.$hash
                     )
             ));
 
@@ -468,14 +468,14 @@ class UserController extends Controller
         }
     }
 
-    public function recouverPassword(Request $request, UserForgotPassword $forgot){
-        $resetRequest = $forgot->findByHash($request->input('hash'));
+    public function likeRecouverExpired($hash, UserForgotPassword $forgot){
+        $resetRequest = $forgot->findByHash($hash);
 
         $datetime1 = date_create($resetRequest->created_at);
         $datetime2 = date_create(date('y-m-d H:i:s'));
         $interval = date_diff($datetime1, $datetime2);
 
-        if($interval->i > 30 || $interval->h > 0){
+        if($interval->i > 30 || $interval->h > 0 || $resetRequest->status == 'recouvered'){
             $resetRequest->status = 'recouvered';
             $resetRequest->save();
             throw new HttpResponseException(response()->json([
@@ -485,6 +485,11 @@ class UserController extends Controller
                 'url'    => route('users.forgotpassword')
             ], 202));
         }
+
+    }
+
+    public function recouverPassword(Request $request, UserForgotPassword $forgot){
+        $resetRequest = $forgot->findByHash($request->input('hash'));
 
         $update = $this->updatePassword($request, $resetRequest->user_id);
 

@@ -18,6 +18,7 @@ use Illuminate\Support\Facades\Route;
 Route::post('v1/login', 'UserController@login')->name('users.login');
 Route::post('v1/register', 'UserController@store')->name('users.store');
 Route::post('v1/forgot-password', 'UserController@forgotPassword')->name('users.forgotpassword');
+Route::get('v1/check-link-recouver-password/{hash}', 'UserController@likeRecouverExpired')->name('users.linkrecouverexpired');
 Route::post('v1/recouver-password', 'UserController@recouverPassword')->name('users.recouverpassword');
 
 Route::group(['prefix' => 'v1', 'middleware' => ['jwt.verify','throttle:5000,1']], function () {
