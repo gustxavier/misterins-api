@@ -88,6 +88,10 @@ class User extends Authenticatable implements JWTSubject
         return $this->where('cpf', '=', $cpf)->first();
     }
 
+    public function findByEmail($email){
+        return $this->where('email', '=', $email)->first();
+    }
+
     public function login($credentials){
         if (!$token = JWTAuth::attempt($credentials, ['exp' => Carbon::now()->addDays(1)->timestamp])) {
             throw new \Exception('Credencias incorretas, verifique-as e tente novamente.', -401);

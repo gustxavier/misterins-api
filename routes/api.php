@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -14,9 +15,10 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::post('v1/register', 'UserController@store')->name('users.store');
-Route::get('v1/register', 'UserController@show')->name('users.store');
 Route::post('v1/login', 'UserController@login')->name('users.login');
+Route::post('v1/register', 'UserController@store')->name('users.store');
+Route::post('v1/forgot-password', 'UserController@forgotPassword')->name('users.forgotpassword');
+Route::post('v1/recouver-password', 'UserController@recouverPassword')->name('users.recouverpassword');
 
 Route::group(['prefix' => 'v1', 'middleware' => ['jwt.verify','throttle:5000,1']], function () {
 
@@ -46,4 +48,17 @@ Route::group(['prefix' => 'v1', 'middleware' => ['jwt.verify','throttle:5000,1']
   
   // Courses
   Route::get('courses/getCoursesByUser/{user_id}', 'CourseController@getCoursesByUser')->name('courses.getCoursesByUser');
+});
+
+
+Route::get('v1/send-mail', function () {
+
+  $details = [
+      'name' => 'Gustavo Xavier de Oliveira',
+      'link' => 'google.com.br'
+  ];
+ 
+  Mail::to('gustasv00@gmail.com')->send(new \App\Mail\ForgotPassword($details));
+ 
+  dd("Email is Sent.");
 });

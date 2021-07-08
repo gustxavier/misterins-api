@@ -11,13 +11,16 @@ use Illuminate\Http\Request;
 use App\Transformers\User\UserResource;
 use App\Transformers\User\UserResourceCollection;
 use App\UserHasCourse;
+use App\UserForgotPassword;
+use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Support\Facades\Hash;
-use MultidimensionalArrayService;
+use Illuminate\Support\Facades\Mail;
 
 class UserController extends Controller
 {
 
     const HOTMART_ID_PARCEIRO_DE_NEGOCIOS = '448026';
+    const KEY = 'fdslkj#$%7456';
 
     private $user;
 
@@ -405,5 +408,91 @@ class UserController extends Controller
         }
 
         return false;
+    }
+
+    /**
+     * @method forgotPassword
+     * @param Request $request
+     * @param UserForgotPassword $forgot
+     */
+    public function forgotPassword(Request $request, UserForgotPassword $forgot){
+        
+        if(!$user = $this->user->findByEmail($request->input('email'))){
+            throw new HttpResponseException(response()->json([
+                'msg'   => 'Ops! Este e-mail parece não existir em nossa base de dados.',
+                'status' => true,
+                'icon'   => 'danger',
+                'url'    => route('users.forgotpassword')
+            ], 202));
+        }
+
+        if(!$forgoted = $forgot->findByUserID($user->id)){
+            $hash = base64_encode($user->email.self::KEY.time());
+            $forgot->insertRequest(array('user_id' => $user->id, 'hash' => $hash));
+
+            Mail::to('gustasv00@gmail.com')->send(new \App\Mail\ForgotPassword(
+                array(
+                    'name' => $user->name,
+                    'link' => 'https://localhost:3000/recouver/'.$hash
+                    )
+            ));
+
+            throw new HttpResponseException(response()->json([
+                'status' => true,
+                'msg'    => 'Enviamos um e-mail com as instruções de recuperação da sua senha. Acesse seu e-mail e clique no link de recuperação. O link expira em 30 minutos.',
+                'icon'   => 'success',
+                'url'    => route('users.forgotpassword')
+            ], 202));
+        }
+
+        $datetime1 = date_create($forgoted->created_at);
+        $datetime2 = date_create(date('y-m-d H:i:s'));
+        $interval = date_diff($datetime1, $datetime2);
+
+        if($interval->i > 30 || $interval->h > 0){
+            $forgoted->status = 'recouvered';
+            $forgoted->save();
+            throw new HttpResponseException(response()->json([
+                'status' => true,
+                'msg'    => 'Oops! O link de redefinição de senha expirou. Acesse a plataforma e tente redefinir sua senha novamente clicando em "Esqueci minha senha" na página de login.',
+                'icon'   => 'danger',
+                'url'    => route('users.forgotpassword')
+            ], 202));
+        }else{
+            throw new HttpResponseException(response()->json([
+                'status' => true,
+                'msg'    => 'Olá, você já solicitou a recuperação de senha. Enviamos um e-mail com as instruções de recuperação da sua senha. Acesse seu e-mail e clique no link de recuperação. O link expira em 30 minutos.',
+                'icon'   => 'warning',
+                'url'    => route('users.forgotpassword')
+            ], 202));
+        }
+    }
+
+    public function recouverPassword(Request $request, UserForgotPassword $forgot){
+        $resetRequest = $forgot->findByHash($request->input('hash'));
+
+        $datetime1 = date_create($resetRequest->created_at);
+        $datetime2 = date_create(date('y-m-d H:i:s'));
+        $interval = date_diff($datetime1, $datetime2);
+
+        if($interval->i > 30 || $interval->h > 0){
+            $resetRequest->status = 'recouvered';
+            $resetRequest->save();
+            throw new HttpResponseException(response()->json([
+                'status' => true,
+                'msg'    => 'Oops! O link de redefinição de senha expirou. Acesse a plataforma e tente redefinir sua senha novamente clicando em "Esqueci minha senha" na página de login.',
+                'icon'   => 'danger',
+                'url'    => route('users.forgotpassword')
+            ], 202));
+        }
+
+        $update = $this->updatePassword($request, $resetRequest->user_id);
+
+        if($update){
+            $resetRequest->status = 'recouvered';
+            $resetRequest->save();
+        }
+
+        return $update;
     }
 }
