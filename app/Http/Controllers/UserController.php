@@ -433,7 +433,7 @@ class UserController extends Controller
             Mail::to($user->email)->send(new \App\Mail\ForgotPassword(
                 array(
                     'name' => $user->name,
-                    'link' => 'https://api.misterins.com.br/recouver/'.$hash
+                    'link' => 'https://app.misterins.com.br/recouver/'.$hash
                     )
             ));
 
