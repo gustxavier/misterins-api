@@ -430,7 +430,7 @@ class UserController extends Controller
             $hash = base64_encode($user->email.self::KEY.time());
             $forgot->insertRequest(array('user_id' => $user->id, 'hash' => $hash));
 
-            Mail::to('gustasv00@gmail.com')->send(new \App\Mail\ForgotPassword(
+            Mail::to($user->email)->send(new \App\Mail\ForgotPassword(
                 array(
                     'name' => $user->name,
                     'link' => 'https://api.misterins.com.br/recouver/'.$hash
