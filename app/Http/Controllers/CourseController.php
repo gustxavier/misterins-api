@@ -8,7 +8,7 @@ use App\Transformers\Course\CourseResource;
 use App\Transformers\Course\CourseResourceCollection;
 use App\UserHasCourse;
 use Illuminate\Http\Request;
-
+use Illuminate\Support\Facades\Auth;
 
 class CourseController extends Controller
 {
@@ -53,8 +53,14 @@ class CourseController extends Controller
         $userHasCourse = new UserHasCourse;
 
         $data = array(
-            'all' => $this->course->index()->toArray(),
-            'checked' => $userHasCourse->getCoursesByUser($userID)->toArray()
+            'status' => true,
+            'data' => array(
+                'all' => $this->course->index()->toArray(),
+                'checked' => $userHasCourse->getCoursesByUser($userID)->toArray()
+            ),
+            'permission' => Auth::user()->permission,
+            'msg'    => 'Listando dados',
+            'url'    => route('courses.index')
         );
         return $data;
     }

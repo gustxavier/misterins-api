@@ -28,6 +28,20 @@ class CopyController extends Controller
         return new CopyResourceCollection($this->copy->index());
     }
 
+    public function getCopyByCourseID($course_id){
+        
+        try {            
+            $data = $this
+                ->copy
+                ->getCopyByCourseID($course_id);
+                        
+        } catch (\Throwable|\Exception $e) {
+            return ResponseService::exception('copy.getcopybycourseid',null, $e);
+        }
+
+        return new CopyResourceCollection($data);
+    }
+
     /**
      * Store a newly created resource in storage.
      *

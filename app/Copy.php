@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Copy extends Model
 {
-    protected $fillable = ['title','important_text'];
+    protected $fillable = ['title','important_text', 'course_id'];
 
     public function index(){
         return  $this->get();
@@ -27,10 +27,12 @@ class Copy extends Model
         return $show;
     }
 
-    public function getCopy($id){
-        $copy = $this->where('live_id', '=', $id)->get();
+    public function getCopyByCourseID($id){
+        return $this->where('course_id', '=', $id)->get();
+    }
 
-        return $copy;
+    public function getCopy($id){
+        return $this->where('live_id', '=', $id)->get();
     }
 
     public function updateCopy($fields, $id)

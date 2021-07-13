@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddCourseIdToLivesTable extends Migration
+class CreateLiveHasCoursesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,9 +13,13 @@ class AddCourseIdToLivesTable extends Migration
      */
     public function up()
     {
-        Schema::table('lives', function (Blueprint $table) {
-            $table->unsignedBigInteger('course_id')->after('id');
+        Schema::create('live_has_courses', function (Blueprint $table) {
+            $table->id();
+            $table->unsignedBigInteger('live_id');
+            $table->foreign('live_id')->references('id')->on('lives');
+            $table->unsignedBigInteger('course_id');
             $table->foreign('course_id')->references('id')->on('courses');
+            $table->timestamps();
         });
     }
 
@@ -26,9 +30,6 @@ class AddCourseIdToLivesTable extends Migration
      */
     public function down()
     {
-        Schema::table('lives', function (Blueprint $table) {
-            $table->dropForeign('course_id');
-            $table->dropColumn('course_id');
-        });
+        Schema::dropIfExists('live_has_courses');
     }
 }
