@@ -15,7 +15,7 @@ class CreateUserHasClassesTable extends Migration
     {
         Schema::create('user_has_classes', function (Blueprint $table) {
             $table->id();
-            $table->unsignedInteger('user_id');
+            $table->unsignedBigInteger('user_id');
             $table->foreign('user_id')->references('id')->on('users');
             $table->unsignedBigInteger('class_id');
             $table->foreign('class_id')->references('id')->on('course_has_classes');

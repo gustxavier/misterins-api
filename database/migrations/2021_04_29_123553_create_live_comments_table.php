@@ -15,10 +15,10 @@ class CreateLiveCommentsTable extends Migration
     {
         Schema::create('live_comments', function (Blueprint $table) {
             $table->increments('id');
-            $table->unsignedInteger('user_id');
+            $table->unsignedBigInteger('user_id');
             $table->foreign('user_id')->references('id')->on('users');  
             $table->longText('comment');
-            $table->unsignedInteger('live_id');
+            $table->unsignedBigInteger('live_id');
             $table->foreign('live_id')->references('id')->on('lives');
             $table->timestamps();
         });
