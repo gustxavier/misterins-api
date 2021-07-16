@@ -17,7 +17,7 @@ class CreateUserHasClassesTable extends Migration
             $table->id();
             $table->unsignedInteger('user_id');
             $table->foreign('user_id')->references('id')->on('users');
-            $table->unsignedInteger('class_id');
+            $table->unsignedBigInteger('class_id');
             $table->foreign('class_id')->references('id')->on('course_has_classes');
             $table->timestamps();
         });
