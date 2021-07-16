@@ -38,7 +38,8 @@ class CopyResource extends JsonResource
             'id' => $this->id,
             'title' => $this->title,
             'important_text' => $this->important_text,            
-            'description' => $this->description            
+            'description' => $this->description,
+            'course_id' => $this->course_id,       
         ];
     }
 

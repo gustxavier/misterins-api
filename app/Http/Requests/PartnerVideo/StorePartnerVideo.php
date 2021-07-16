@@ -1,13 +1,13 @@
 <?php
 
-namespace App\Http\Requests\PartnerVideoVDI;
+namespace App\Http\Requests\PartnerVideo;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Http\Exceptions\HttpResponseException;
 
-class StorePartnerVideoVDI extends FormRequest
+class StorePartnerVideo extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -46,7 +46,7 @@ class StorePartnerVideoVDI extends FormRequest
                 'msg'   => 'Ops! Algum campo obrigatório não foi preenchido.',
                 'status' => false,
                 'errors'    => $validator->errors(),
-                'url'    => route('partnervideovdi.store')
+                'url'    => route('partnervideo.store')
             ], 403));
        }
     }

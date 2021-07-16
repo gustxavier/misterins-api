@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Transformers\PartnerVideoVDI;
+namespace App\Transformers\PartnerVideo;
 ;
 
 use Illuminate\Http\Resources\Json\ResourceCollection;
 use Illuminate\Support\Facades\Auth;
 
-class PartnerVideoVDIResourceCollection extends ResourceCollection
+class PartnerVideoResourceCollection extends ResourceCollection
 {
     /**
    * Create a new resource instance.
@@ -31,7 +31,7 @@ class PartnerVideoVDIResourceCollection extends ResourceCollection
       'status' => true,
       'permission' => Auth::user()->permission,
       'msg'    => 'Listando dados',
-      'url'    => route('partnervideovdi.index')
+      'url'    => route('partnervideo.index')
     ];
   }
 

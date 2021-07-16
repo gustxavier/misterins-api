@@ -19,4 +19,14 @@ class Course extends Model
         $course->update($fields);
         return $course;
     }   
+
+    public function show($id){
+        $show = $this->find($id);
+ 
+        if (!$show) {
+            throw new \Exception('Nada Encontrado', -404);
+        }
+
+        return $show;
+    }
 }

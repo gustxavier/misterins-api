@@ -14,7 +14,7 @@ class AddCourseIdToCopiesTable extends Migration
     public function up()
     {
         Schema::table('copies', function (Blueprint $table) {
-            $table->unsignedBigInteger('course_id')->after('id');
+            $table->unsignedBigInteger('course_id')->nullable()->after('id');
             $table->foreign('course_id')->references('id')->on('courses');
         });
     }

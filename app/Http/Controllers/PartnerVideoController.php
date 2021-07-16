@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\PartnerVideoVDI\StorePartnerVideoVDI;
-use App\PartnerVideoVDI;
+use App\Http\Requests\PartnerVideo\StorePartnerVideo;
+use App\PartnerVideo;
 use App\Services\ResponseService;
-use App\Transformers\PartnerVideoVDI\PartnerVideoVDIResource;
-use App\Transformers\PartnerVideoVDI\PartnerVideoVDIResourceCollection;
+use App\Transformers\PartnerVideo\PartnerVideoResource;
+use App\Transformers\PartnerVideo\PartnerVideoResourceCollection;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Response;
@@ -14,13 +14,13 @@ use Illuminate\Support\Facades\Storage;
 use Intervention\Image\Facades\Image;
 
 
-class PartnerVideoVDIController extends Controller
+class PartnerVideoController extends Controller
 {
-    private $partnerVideoVDI;
+    private $partnerVideo;
 
-    public function __construct(PartnerVideoVDI $partnerVideoVDI)
+    public function __construct(PartnerVideo $partnerVideo)
     {
-        $this->partnerVideoVDI = $partnerVideoVDI;
+        $this->partnerVideo = $partnerVideo;
     }
 
     /**
@@ -31,7 +31,7 @@ class PartnerVideoVDIController extends Controller
      */
     public function index()
     {
-        return new PartnerVideoVDIResourceCollection($this->partnerVideoVDI->index());
+        return new PartnerVideoResourceCollection($this->partnerVideo->index());
     }
 
     /**
@@ -40,13 +40,13 @@ class PartnerVideoVDIController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(StorePartnerVideoVDI $request)
+    public function store(StorePartnerVideo $request)
     {
         try {
-            $path = 'VDI/' . $request->input('type') . '/';
+            $path = '/' . $request->input('type') . '/';
 
-            if (!File::isDirectory(storage_path() . 'app/public/' . $path)) {
-                Storage::makeDirectory(storage_path() . 'app/public/' . $path);
+            if (!File::isDirectory(storage_path() . '/app/public/' . $path)) {
+                Storage::makeDirectory(storage_path() . '/app/public/' . $path);
             }
 
             $video = $request->get('archive');
@@ -63,33 +63,52 @@ class PartnerVideoVDIController extends Controller
                     )
                 );
                 $data = $this
-                    ->partnerVideoVDI
+                    ->partnerVideo
                     ->store($request->all());
             }                        
         } catch (\Throwable | \Exception $e) {
-            return ResponseService::exception('partnervideovdi.store', null, $e);
+            return ResponseService::exception('partnervideo.store', null, $e);
         }
 
-        return new PartnerVideoVDIResource($data, array('type' => 'store', 'route' => 'partnervideovdi.store'));
+        return new PartnerVideoResource($data, array('type' => 'store', 'route' => 'partnervideo.store'));
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  \App\PartnerVideoVDI  $partnerVideoVDI
+     * @param  \App\PartnerVideo  $partnerVideo
      * @return \Illuminate\Http\Response
      */
     public function show($id)
     {
         try {
             $data = $this
-                ->partnerVideoVDI
+                ->partnerVideo
                 ->show($id);
         } catch (\Throwable | \Exception $e) {
-            return ResponseService::exception('partnervideovdi.show', $id, $e);
+            return ResponseService::exception('partnervideo.show', $id, $e);
         }
 
-        return new PartnerVideoVDIResource($data, array('type' => 'show', 'route' => 'partnervideovdi.show'));
+        return new PartnerVideoResource($data, array('type' => 'show', 'route' => 'partnervideo.show'));
+    }
+    
+    /**
+     * Display the specified resource.
+     *
+     * @param  \App\PartnerVideo  $partnerVideo
+     * @return \Illuminate\Http\Response
+     */
+    public function getVideoByCourseID($id)
+    {
+        try {
+            $data = $this
+                ->partnerVideo
+                ->getVideoByCourseID($id);
+        } catch (\Throwable | \Exception $e) {
+            return ResponseService::exception('partnervideo.getvideobycourseid', $id, $e);
+        }
+
+        return new PartnerVideoResource($data, array('type' => 'get', 'route' => 'partnervideo.getvideobycourseid'));
     }
 
     /**
@@ -102,44 +121,43 @@ class PartnerVideoVDIController extends Controller
     {
         try {
             $data = $this
-                ->partnerVideoVDI
-                ->updatePartnerVideoVDI($request->all(), $id);
+                ->partnerVideo
+                ->updatePartnerVideo($request->all(), $id);
         } catch (\Throwable | \Exception $e) {
-            return ResponseService::exception('partnervideovdi.update', $id, $e);
+            return ResponseService::exception('partnervideo.update', $id, $e);
         }
 
-        return new PartnerVideoVDIResource($data, array('type' => 'update', 'route' => 'partnervideovdi.update'));
+        return new PartnerVideoResource($data, array('type' => 'update', 'route' => 'partnervideo.update'));
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\PartnerVideoVDI  $id
+     * @param  \App\PartnerVideo  $id
      * @return \Illuminate\Http\Response
      */
     public function destroy($id)
     {
         try {
             $data = $this
-                ->partnerVideoVDI
-                ->destroyPartnerVideoVDI($id);
+                ->partnerVideo
+                ->destroyPartnerVideo($id);
         } catch (\Throwable | \Exception $e) {
-            return ResponseService::exception('partnervideovdi.destroy', $id, $e);
+            return ResponseService::exception('partnervideo.destroy', $id, $e);
         }
-        return new PartnerVideoVDIResource($data, array('type' => 'destroy', 'route' => 'partnervideovdi.destroy'));
+        return new PartnerVideoResource($data, array('type' => 'destroy', 'route' => 'partnervideo.destroy'));
     }
 
-    public function getByType($type)
+    public function getVideos($courseID, $type)
     {
         try {
             $data = $this
-                ->partnerVideoVDI
-                ->getVideoByType($type);
-            // return $data;
+                ->partnerVideo
+                ->getVideos($courseID,$type);
         } catch (\Throwable | \Exception $e) {
-            return ResponseService::exception('partnervideovdi.getByType', $type, $e);
+            return ResponseService::exception('partnervideo.getvideos', $type, $e);
         }
-        return new PartnerVideoVDIResourceCollection($data);
+        return new PartnerVideoResourceCollection($data);
     }
 
     /**
@@ -150,11 +168,11 @@ class PartnerVideoVDIController extends Controller
         
         try {
             $data = $this
-                ->partnerVideoVDI
+                ->partnerVideo
                 ->show($id);
             return response()->download(public_path('storage/' . $data->path),null,array('Content-Type: application/mp4'));
         } catch (\Throwable | \Exception $e) {
-            return ResponseService::exception('partnervideovdi.downloadVideo', $id, $e);
+            return ResponseService::exception('partnervideo.downloadVideo', $id, $e);
         }
     }
 }

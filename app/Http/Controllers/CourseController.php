@@ -48,6 +48,19 @@ class CourseController extends Controller
         return new CourseResource($data,array('type' => 'update','route' => 'courses.update'));
     }
 
+    public function show($id)
+    {
+        try {
+            $data = $this
+                ->course
+                ->show($id);
+        } catch (\Throwable | \Exception $e) {
+            return ResponseService::exception('courses.show', $id, $e);
+        }
+
+        return new CourseResource($data, array('type' => 'show', 'route' => 'courses.show'));
+    }
+
     public function getCoursesByUser($userID){
 
         $userHasCourse = new UserHasCourse;

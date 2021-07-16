@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Transformers\PartnerVideoVDI;
+namespace App\Transformers\PartnerVideo;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 use App\Services\ResponseService;
 
-class PartnerVideoVDIResource extends JsonResource
+class PartnerVideoResource extends JsonResource
 {
     /**
      * @var
@@ -39,7 +39,8 @@ class PartnerVideoVDIResource extends JsonResource
             'title' => $this->title,
             'path' => $this->path,            
             'file_name' => $this->file_name,            
-            'type' => $this->type            
+            'type' => $this->type,            
+            'course_id' => $this->course_id,            
         ];
     }
 

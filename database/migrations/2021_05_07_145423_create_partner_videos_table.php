@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreatePartnerVideoVDISTable extends Migration
+class CreatePartnerVideosTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,7 +13,7 @@ class CreatePartnerVideoVDISTable extends Migration
      */
     public function up()
     {
-        Schema::create('partner_video_v_d_i_s', function (Blueprint $table) {
+        Schema::create('partner_videos', function (Blueprint $table) {
             $table->id();
             $table->string('title');
             $table->string('path');
@@ -31,6 +31,6 @@ class CreatePartnerVideoVDISTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('partner_video_v_d_i_s');
+        Schema::dropIfExists('partner_videos');
     }
 }

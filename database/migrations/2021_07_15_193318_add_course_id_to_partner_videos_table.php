@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddCourseIdToLivesTable extends Migration
+class AddCourseIdToPartnerVideosTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,8 +13,8 @@ class AddCourseIdToLivesTable extends Migration
      */
     public function up()
     {
-        Schema::table('lives', function (Blueprint $table) {
-            $table->unsignedBigInteger('course_id')->after('id');
+        Schema::table('partner_videos', function (Blueprint $table) {
+            $table->unsignedBigInteger('course_id')->nullable()->after('id');
             $table->foreign('course_id')->references('id')->on('courses');
         });
     }
@@ -26,7 +26,7 @@ class AddCourseIdToLivesTable extends Migration
      */
     public function down()
     {
-        Schema::table('lives', function (Blueprint $table) {
+        Schema::table('partner_videos', function (Blueprint $table) {
             $table->dropForeign('course_id');
             $table->dropColumn('course_id');
         });

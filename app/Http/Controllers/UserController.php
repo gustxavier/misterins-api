@@ -3,16 +3,16 @@
 namespace App\Http\Controllers;
 
 use App\Course;
-use App\User;
 use App\Http\Requests\User\StoreUser;
 use App\Services\ResponseService;
-use GuzzleHttp\Client;
-use Illuminate\Http\Request;
 use App\Transformers\User\UserResource;
 use App\Transformers\User\UserResourceCollection;
-use App\UserHasCourse;
+use App\User;
 use App\UserForgotPassword;
+use App\UserHasCourse;
+use GuzzleHttp\Client;
 use Illuminate\Http\Exceptions\HttpResponseException;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 
@@ -29,7 +29,6 @@ class UserController extends Controller
         $this->user = $user;
     }
 
-
     public function index()
     {
         // return $this->user->index();
@@ -43,7 +42,7 @@ class UserController extends Controller
      */
     public function store(StoreUser $request)
     {
-        
+
         $request->merge(
             array('email' => mb_strtolower($request->input('email')))
         );
@@ -64,10 +63,10 @@ class UserController extends Controller
                 $insert = $this
                     ->user
                     ->create($request->all());
-                    UserHasCourse::create(array(
-                        'user_id' => $insert->id,
-                        'course_id' => 9
-                    ));    
+                UserHasCourse::create(array(
+                    'user_id' => $insert->id,
+                    'course_id' => 9,
+                ));
             }
 
             // Se não encontrar, busca na API da HOTMART
@@ -81,20 +80,20 @@ class UserController extends Controller
                 $params = array(
                     // 'grant_type' => 'client_credentials',
                     'client_id' => '83b75337-e09a-495d-a824-49c0a36a0adf',
-                    'client_secret' => '5507d243-6242-4ab8-8231-6dc92b9359d5'
+                    'client_secret' => '5507d243-6242-4ab8-8231-6dc92b9359d5',
                 );
 
                 // Padrão de cabeçalho para autenticação com a hotmart
                 $headers = array(
                     'Content-Type' => 'application/json',
-                    'Authorization' => 'Basic ODNiNzUzMzctZTA5YS00OTVkLWE4MjQtNDljMGEzNmEwYWRmOjU1MDdkMjQzLTYyNDItNGFiOC04MjMxLTZkYzkyYjkzNTlkNQ=='
+                    'Authorization' => 'Basic ODNiNzUzMzctZTA5YS00OTVkLWE4MjQtNDljMGEzNmEwYWRmOjU1MDdkMjQzLTYyNDItNGFiOC04MjMxLTZkYzkyYjkzNTlkNQ==',
                 );
 
                 // Realiza a autenticação com a HOTMART
                 $response = $client->request('POST', $url, [
                     'form_params' => $params,
                     'headers' => $headers,
-                    'verify'  => false,
+                    'verify' => false,
                 ]);
 
                 $data = json_decode($response->getBody());
@@ -102,13 +101,13 @@ class UserController extends Controller
                 // Recupera a lista de todos os affiliados que estão ativos no curso com ID 1406204 (Mister Mind)
                 $response = $client->request('GET', 'https://api-hot-connect.hotmart.com/reports/rest/v2/history', [
                     'query' => array(
-                        'email' => mb_strtolower(trim($request->input('email')))
+                        'email' => mb_strtolower(trim($request->input('email'))),
                     ),
                     'headers' => array(
                         'Content-Type' => 'application/json',
                         'Authorization' => 'Bearer ' . $data->access_token,
                     ),
-                    'verify'  => false,
+                    'verify' => false,
                 ]);
 
                 $res = json_decode($response->getBody());
@@ -117,8 +116,8 @@ class UserController extends Controller
                 if (!empty($res->data)) {
                     $find = true;
                     $insert = $this
-                    ->user
-                    ->create($request->all());
+                        ->user
+                        ->create($request->all());
 
                     $courses = array();
                     $allCourse = Course::all();
@@ -126,17 +125,17 @@ class UserController extends Controller
                     foreach ($res->data as $value) {
 
                         foreach ($allCourse as $val) {
-                            
-                            if($val->hotmart_id == $value->product->id){
+
+                            if ($val->hotmart_id == $value->product->id) {
                                 $courses[] = array(
-                                    'user_id' => $insert->id, 
+                                    'user_id' => $insert->id,
                                     'course_id' => $val->id,
                                     'created_at' => date('Y-m-d H:i:s'),
-                                    'updated_at' => date('Y-m-d H:i:s')
+                                    'updated_at' => date('Y-m-d H:i:s'),
                                 );
                             }
                         }
-                    }        
+                    }
                     UserHasCourse::insert($courses);
                 }
             }
@@ -151,14 +150,14 @@ class UserController extends Controller
         return new UserResource($insert, array('type' => 'store', 'route' => 'users.store'));
     }
 
-    public function adminInsert(StoreUser $request){
-        try{   
-            
+    public function adminInsert(StoreUser $request)
+    {
+        try {
+
             $request->merge(
                 array('email' => mb_strtolower($request->input('email')))
             );
-            
-    
+
             if ($this->verificaCPF($request->input('cpf'))) {
                 return ResponseService::alert('warning', 'Este CPF já está cadastrado no sistema!');
             }
@@ -166,11 +165,36 @@ class UserController extends Controller
             $insert = $this
                 ->user
                 ->create($request->all());
-        }catch(\Throwable|\Exception $e){
-            return ResponseService::exception('users.admininsert',null,$e);
+        } catch (\Throwable | \Exception $e) {
+            return ResponseService::exception('users.admininsert', null, $e);
         }
 
-        return new UserResource($this->user->show($insert->id),array('type' => 'store','route' => 'users.admininsert'));
+        return new UserResource($this->user->show($insert->id), array('type' => 'store', 'route' => 'users.admininsert'));
+    }
+
+    public function adminInsertImported(Request $request)
+    {
+
+        try {
+            $request->merge(
+                array('emailImported' => mb_strtolower($request->input('emailImported')))
+            );
+
+            $pathFile = public_path('storage/users_imported/') . 'importados_hotmart.csv';
+            $stringText = file_get_contents($pathFile);
+            
+            //Percorre um arquivo com os e-mails de quem comprou transferindo direto para conta da MISTER INS sem passar pelo processo de venda da HOTMART. Sendo assim, esse usuário foi importado manualmente, não constando na lista de vendas da HOTMART. Por isso fez-se necessário a criação desta lista
+            if (strpos($stringText, $request->input('emailImported'))) {
+                return ResponseService::alert('warning', 'Querido colaborador da MisterIns. Este e-mail já está na lista de importados!');
+            }
+            
+            
+        } catch (\Throwable | \Exception $e) {
+            return ResponseService::exception('users.admininsertimported', null, $e);
+        }
+
+        file_put_contents($pathFile,$stringText.$request->input('emailImported').";");
+        return ResponseService::alert('success', 'Deu bom hein. Usuário inserido com sucesso!');
     }
 
     /**
@@ -179,36 +203,37 @@ class UserController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id){
-        try{        
+    public function update(Request $request, $id)
+    {
+        try {
             $data = $this
-            ->user
-            ->updateUser($request->all(), $id);
+                ->user
+                ->updateUser($request->all(), $id);
 
             return $data;
-        }catch(\Throwable|\Exception $e){
-            return ResponseService::exception('users.update',$id,$e);
+        } catch (\Throwable | \Exception $e) {
+            return ResponseService::exception('users.update', $id, $e);
         }
 
-        return new UserResource($data,array('type' => 'update','route' => 'users.update'));
+        return new UserResource($data, array('type' => 'update', 'route' => 'users.update'));
     }
 
-    
     public function updatePassword(Request $request, $id)
     {
-        try{        
+        try {
             $data = $this
-            ->user
-            ->updateNewPassword($request->input('password'), $id);
-        }catch(\Throwable|\Exception $e){
-            return ResponseService::exception('users.updatePassword',$id,$e);
+                ->user
+                ->updateNewPassword($request->input('password'), $id);
+        } catch (\Throwable | \Exception $e) {
+            return ResponseService::exception('users.updatePassword', $id, $e);
         }
 
-        return new UserResource($data,array('type' => 'update','route' => 'users.updatePassword'));
+        return new UserResource($data, array('type' => 'update', 'route' => 'users.updatePassword'));
     }
 
-    public function updateUserHasCourses(Request $request, $id){
-        try{        
+    public function updateUserHasCourses(Request $request, $id)
+    {
+        try {
             UserHasCourse::where('user_id', '=', $id)->delete();
 
             foreach ($request->all() as $value) {
@@ -216,19 +241,18 @@ class UserController extends Controller
                     'user_id' => $id,
                     'course_id' => $value,
                     'created_at' => date('Y-m-d H:i:s'),
-                    'updated_at' => date('Y-m-d H:i:s')
+                    'updated_at' => date('Y-m-d H:i:s'),
                 ];
             }
             UserHasCourse::insert($data);
-                        
+
             $data = $this->user->show($id);
-        }catch(\Throwable|\Exception $e){
-            return ResponseService::exception('users.updatePassword',$id,$e);
+        } catch (\Throwable | \Exception $e) {
+            return ResponseService::exception('users.updatePassword', $id, $e);
         }
 
-        return new UserResource($data,array('type' => 'update','route' => 'users.updatePassword'));
+        return new UserResource($data, array('type' => 'update', 'route' => 'users.updatePassword'));
     }
-        
 
     private function verificaCPF($cpf)
     {
@@ -252,20 +276,20 @@ class UserController extends Controller
         } catch (\Throwable | \Exception $e) {
             return ResponseService::exception('users.login', null, $e);
         }
-        
-        $user = User::where('email', '=',  $credentials['email'])
+
+        $user = User::where('email', '=', $credentials['email'])
             ->leftJoin('user_has_courses', 'users.id', '=', 'user_has_courses.user_id')
             ->first();
 
         $userCourse = UserHasCourse::select('courses.hotmart_id')
-            ->where('user_id', '=' , $user->id)
+            ->where('user_id', '=', $user->id)
             ->leftjoin('courses', 'user_has_courses.course_id', '=', 'courses.id')
             ->get();
 
         $courses = '';
 
         foreach ($userCourse as $key => $value) {
-            $courses .= $value['hotmart_id'].',';
+            $courses .= $value['hotmart_id'] . ',';
         }
 
         return response()->json(array(
@@ -274,7 +298,7 @@ class UserController extends Controller
             'username' => $user->name,
             'useremail' => $user->email,
             'permission' => $user->permission,
-            'courses' => $courses
+            'courses' => $courses,
         ));
     }
 
@@ -299,12 +323,12 @@ class UserController extends Controller
 
     /**
      * Retorna uma senha criptografada
-     * 
+     *
      * @param int $pass
      */
     public function generatePassword($pass)
     {
-        return Hash::make($pass);        
+        return Hash::make($pass);
     }
 
     /**
@@ -315,21 +339,22 @@ class UserController extends Controller
      */
     public function show($id)
     {
-        try{        
+        try {
             $data = $this
-            ->user
-            ->show($id);
-        }catch(\Throwable|\Exception $e){
-            return ResponseService::exception('users.show',$id,$e);
+                ->user
+                ->show($id);
+        } catch (\Throwable | \Exception $e) {
+            return ResponseService::exception('users.show', $id, $e);
         }
 
-        return new UserResource($data,array('type' => 'show','route' => 'users.show'));
-    } 
+        return new UserResource($data, array('type' => 'show', 'route' => 'users.show'));
+    }
 
     /**
      * Método criado para solução genial de arquivo com e-mail dos alunos importados manualmente na hotmart
      */
-    public function checkEmailByMaicoList(Request $request){
+    public function checkEmailByMaicoList(Request $request)
+    {
         $request->merge(
             array('email' => mb_strtolower($request->input('email')))
         );
@@ -346,7 +371,7 @@ class UserController extends Controller
             $stringText = file_get_contents(public_path('storage/users_imported/') . 'importados_hotmart.csv');
 
             if (strpos($stringText, $request->input('email'))) {
-                $find = true;      
+                $find = true;
             }
 
             // Se não encontrar, busca na API da HOTMART
@@ -360,20 +385,20 @@ class UserController extends Controller
                 $params = array(
                     // 'grant_type' => 'client_credentials',
                     'client_id' => '83b75337-e09a-495d-a824-49c0a36a0adf',
-                    'client_secret' => '5507d243-6242-4ab8-8231-6dc92b9359d5'
+                    'client_secret' => '5507d243-6242-4ab8-8231-6dc92b9359d5',
                 );
 
                 // Padrão de cabeçalho para autenticação com a hotmart
                 $headers = array(
                     'Content-Type' => 'application/json',
-                    'Authorization' => 'Basic ODNiNzUzMzctZTA5YS00OTVkLWE4MjQtNDljMGEzNmEwYWRmOjU1MDdkMjQzLTYyNDItNGFiOC04MjMxLTZkYzkyYjkzNTlkNQ=='
+                    'Authorization' => 'Basic ODNiNzUzMzctZTA5YS00OTVkLWE4MjQtNDljMGEzNmEwYWRmOjU1MDdkMjQzLTYyNDItNGFiOC04MjMxLTZkYzkyYjkzNTlkNQ==',
                 );
 
                 // Realiza a autenticação com a HOTMART
                 $response = $client->request('POST', $url, [
                     'form_params' => $params,
                     'headers' => $headers,
-                    'verify'  => false,
+                    'verify' => false,
                 ]);
 
                 $data = json_decode($response->getBody());
@@ -382,13 +407,13 @@ class UserController extends Controller
                 $response = $client->request('GET', 'https://api-hot-connect.hotmart.com/reports/rest/v2/history', [
                     'query' => array(
                         'email' => mb_strtolower(trim($request->input('email'))),
-                        'productId' => self::HOTMART_ID_PARCEIRO_DE_NEGOCIOS
+                        'productId' => self::HOTMART_ID_PARCEIRO_DE_NEGOCIOS,
                     ),
                     'headers' => array(
                         'Content-Type' => 'application/json',
                         'Authorization' => 'Bearer ' . $data->access_token,
                     ),
-                    'verify'  => false,
+                    'verify' => false,
                 ]);
 
                 $res = json_decode($response->getBody());
@@ -415,33 +440,34 @@ class UserController extends Controller
      * @param Request $request
      * @param UserForgotPassword $forgot
      */
-    public function forgotPassword(Request $request, UserForgotPassword $forgot){
-        
-        if(!$user = $this->user->findByEmail($request->input('email'))){
+    public function forgotPassword(Request $request, UserForgotPassword $forgot)
+    {
+
+        if (!$user = $this->user->findByEmail($request->input('email'))) {
             throw new HttpResponseException(response()->json([
-                'msg'   => 'Ops! Este e-mail parece não existir em nossa base de dados.',
+                'msg' => 'Ops! Este e-mail parece não existir em nossa base de dados.',
                 'status' => true,
-                'icon'   => 'danger',
-                'url'    => route('users.forgotpassword')
+                'icon' => 'danger',
+                'url' => route('users.forgotpassword'),
             ], 202));
         }
 
-        if(!$forgoted = $forgot->findByUserID($user->id)){
-            $hash = base64_encode($user->email.self::KEY.time());
+        if (!$forgoted = $forgot->findByUserID($user->id)) {
+            $hash = base64_encode($user->email . self::KEY . time());
             $forgot->insertRequest(array('user_id' => $user->id, 'hash' => $hash));
 
             Mail::to($user->email)->send(new \App\Mail\ForgotPassword(
                 array(
                     'name' => $user->name,
-                    'link' => 'https://app.misterins.com.br/recouver/'.$hash
-                    )
+                    'link' => 'https://app.misterins.com.br/recouver/' . $hash,
+                )
             ));
 
             throw new HttpResponseException(response()->json([
                 'status' => true,
-                'msg'    => 'Enviamos um e-mail com as instruções de recuperação da sua senha. Acesse seu e-mail e clique no link de recuperação. O link expira em 30 minutos.',
-                'icon'   => 'success',
-                'url'    => route('users.forgotpassword')
+                'msg' => 'Enviamos um e-mail com as instruções de recuperação da sua senha. Acesse seu e-mail e clique no link de recuperação. O link expira em 30 minutos.',
+                'icon' => 'success',
+                'url' => route('users.forgotpassword'),
             ], 202));
         }
 
@@ -449,51 +475,53 @@ class UserController extends Controller
         $datetime2 = date_create(date('y-m-d H:i:s'));
         $interval = date_diff($datetime1, $datetime2);
 
-        if($interval->i > 30 || $interval->h > 0){
+        if ($interval->i > 30 || $interval->h > 0) {
             $forgoted->status = 'recouvered';
             $forgoted->save();
             throw new HttpResponseException(response()->json([
                 'status' => true,
-                'msg'    => 'Oops! O link de redefinição de senha expirou. Acesse a plataforma e tente redefinir sua senha novamente clicando em "Esqueci minha senha" na página de login.',
-                'icon'   => 'danger',
-                'url'    => route('users.forgotpassword')
+                'msg' => 'Oops! O link de redefinição de senha expirou. Acesse a plataforma e tente redefinir sua senha novamente clicando em "Esqueci minha senha" na página de login.',
+                'icon' => 'danger',
+                'url' => route('users.forgotpassword'),
             ], 202));
-        }else{
+        } else {
             throw new HttpResponseException(response()->json([
                 'status' => true,
-                'msg'    => 'Olá, você já solicitou a recuperação de senha. Enviamos um e-mail com as instruções de recuperação da sua senha. Acesse seu e-mail e clique no link de recuperação. O link expira em 30 minutos.',
-                'icon'   => 'warning',
-                'url'    => route('users.forgotpassword')
+                'msg' => 'Olá, você já solicitou a recuperação de senha. Enviamos um e-mail com as instruções de recuperação da sua senha. Acesse seu e-mail e clique no link de recuperação. O link expira em 30 minutos.',
+                'icon' => 'warning',
+                'url' => route('users.forgotpassword'),
             ], 202));
         }
     }
 
-    public function likeRecouverExpired($hash, UserForgotPassword $forgot){
+    public function likeRecouverExpired($hash, UserForgotPassword $forgot)
+    {
         $resetRequest = $forgot->findByHash($hash);
 
         $datetime1 = date_create($resetRequest->created_at);
         $datetime2 = date_create(date('y-m-d H:i:s'));
         $interval = date_diff($datetime1, $datetime2);
 
-        if($interval->i > 30 || $interval->h > 0 || $resetRequest->status == 'recouvered'){
+        if ($interval->i > 30 || $interval->h > 0 || $resetRequest->status == 'recouvered') {
             $resetRequest->status = 'recouvered';
             $resetRequest->save();
             throw new HttpResponseException(response()->json([
                 'status' => true,
-                'msg'    => 'Oops! O link de redefinição de senha expirou. Acesse a plataforma e tente redefinir sua senha novamente clicando em "Esqueci minha senha" na página de login.',
-                'icon'   => 'danger',
-                'url'    => route('users.forgotpassword')
+                'msg' => 'Oops! O link de redefinição de senha expirou. Acesse a plataforma e tente redefinir sua senha novamente clicando em "Esqueci minha senha" na página de login.',
+                'icon' => 'danger',
+                'url' => route('users.forgotpassword'),
             ], 202));
         }
 
     }
 
-    public function recouverPassword(Request $request, UserForgotPassword $forgot){
+    public function recouverPassword(Request $request, UserForgotPassword $forgot)
+    {
         $resetRequest = $forgot->findByHash($request->input('hash'));
 
         $update = $this->updatePassword($request, $resetRequest->user_id);
 
-        if($update){
+        if ($update) {
             $resetRequest->status = 'recouvered';
             $resetRequest->save();
         }
