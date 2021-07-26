@@ -3,6 +3,7 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 
 class Live extends Model
 {
@@ -10,7 +11,7 @@ class Live extends Model
 
     public function index()
     {
-        return $this->get();
+        return  $this->get();
     }
 
     public function insert($fields)

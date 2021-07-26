@@ -56,6 +56,7 @@ Route::group(['prefix' => 'v1', 'middleware' => ['jwt.verify','throttle:5000,1']
   
   // Courses
   Route::get('courses/getCoursesByUser/{user_id}', 'CourseController@getCoursesByUser')->name('courses.getCoursesByUser');
+  Route::get('courses/getCoursesByLive/{live_id}', 'CourseController@getCoursesByLive')->name('courses.getCoursesByLive');
   
   //Copies
   Route::get('copy/getCopyByCourseID/{course_id}', 'CopyController@getCopyByCourseID')->name('copy.getcopybycourseid');

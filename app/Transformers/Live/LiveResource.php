@@ -38,9 +38,8 @@ class LiveResource extends JsonResource
             'id' => $this->id,
             'title' => $this->title,
             'url' => $this->url,            
-            'description' => $this->description,           
-            'course_id' => $this->course_id,         
-            'hotmart_id' => $this->hotmart_id          
+            'description' => $this->description,        
+            'is_active' => $this->is_active == 'N' ? 'Não': 'Sim',        
         ];
     }
 
@@ -52,7 +51,7 @@ class LiveResource extends JsonResource
      */
     public function with($request)
     {
-        return ResponseService::default($this->config,$this->id);
+        return ResponseService::default($this->config, $this->id);
     }
 
     /**

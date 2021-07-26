@@ -3,23 +3,26 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 
 class Copy extends Model
 {
-    protected $fillable = ['title','important_text', 'course_id'];
+    protected $fillable = ['title', 'important_text', 'course_id', 'description'];
 
-    public function index(){
-        return  $this->get();
+    public function index()
+    {
+        return $this->get();
     }
 
     public function storeCopy($fields)
     {
-        return $this->create($fields); 
+        return $this->create($fields);
     }
 
-    public function show($id){
+    public function show($id)
+    {
         $show = $this->find($id);
- 
+
         if (!$show) {
             throw new \Exception('Nada Encontrado', -404);
         }
@@ -27,11 +30,13 @@ class Copy extends Model
         return $show;
     }
 
-    public function getCopyByCourseID($id){
-        return $this->where('course_id', '=', $id)->get();
+    public function getCopyByCourseID($id)
+    {
+        return $this->select('copies.*', DB::raw('courses.title as course_title'))->where('course_id', '=', $id)->join('courses', 'courses.id', '=', 'copies.course_id')->get();
     }
 
-    public function getCopy($id){
+    public function getCopy($id)
+    {
         return $this->where('live_id', '=', $id)->get();
     }
 
@@ -46,7 +51,6 @@ class Copy extends Model
     public function destroyCopy($id)
     {
         $copy = $this->show($id);
-        $copy->delete();
         return $copy->delete();
     }
 
@@ -54,5 +58,5 @@ class Copy extends Model
     {
         return $this->belongsTo('App\Copy', 'id');
     }
-    
+
 }

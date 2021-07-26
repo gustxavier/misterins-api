@@ -13,13 +13,14 @@ class CopyController extends Controller
 {
     private $copy;
 
-    public function __construct(Copy $copy){
+    public function __construct(Copy $copy)
+    {
         $this->copy = $copy;
     }
 
     /**
      * Display a listing of the resource.
-     * 
+     *
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
@@ -28,15 +29,16 @@ class CopyController extends Controller
         return new CopyResourceCollection($this->copy->index());
     }
 
-    public function getCopyByCourseID($course_id){
-        
-        try {            
+    public function getCopyByCourseID($course_id)
+    {
+
+        try {
             $data = $this
                 ->copy
                 ->getCopyByCourseID($course_id);
-                        
-        } catch (\Throwable|\Exception $e) {
-            return ResponseService::exception('copy.getcopybycourseid',null, $e);
+
+        } catch (\Throwable | \Exception $e) {
+            return ResponseService::exception('copy.getcopybycourseid', null, $e);
         }
 
         return new CopyResourceCollection($data);
@@ -50,15 +52,15 @@ class CopyController extends Controller
      */
     public function store(StoreCopy $request)
     {
-        try{        
+        try {
             $data = $this
-            ->copy
-            ->storeCopy($request->all());
-        }catch(\Throwable|\Exception $e){
-            return ResponseService::exception('copy.store',null,$e);
+                ->copy
+                ->storeCopy($request->all());
+        } catch (\Throwable | \Exception $e) {
+            return ResponseService::exception('copy.store', null, $e);
         }
 
-        return new CopyResource($data,array('type' => 'store','route' => 'copy.store'));
+        return new CopyResource($data, array('type' => 'store', 'route' => 'copy.store'));
     }
 
     /**
@@ -69,17 +71,17 @@ class CopyController extends Controller
      */
     public function show($id)
     {
-        try{        
+        try {
             $data = $this
-            ->copy
-            ->show($id);
-        }catch(\Throwable|\Exception $e){
-            return ResponseService::exception('copy.show',$id,$e);
+                ->copy
+                ->show($id);
+        } catch (\Throwable | \Exception $e) {
+            return ResponseService::exception('copy.show', $id, $e);
         }
 
-        return new CopyResource($data,array('type' => 'show','route' => 'copy.show'));
-    } 
-    
+        return new CopyResource($data, array('type' => 'show', 'route' => 'copy.show'));
+    }
+
     /**
      * Update the specified resource in storage.
      *
@@ -88,16 +90,15 @@ class CopyController extends Controller
      */
     public function update(Request $request, $id)
     {
-        return json_encode('oi');
-        try{        
+        try {
             $data = $this
-            ->copy
-            ->updateCopy($request->all(), $id);
-        }catch(\Throwable|\Exception $e){
-            return ResponseService::exception('copy.update',$id,$e);
+                ->copy
+                ->updateCopy($request->all(), $id);
+        } catch (\Throwable | \Exception $e) {
+            return ResponseService::exception('copy.update', $id, $e);
         }
 
-        return new CopyResource($data,array('type' => 'update','route' => 'copy.update'));
+        return new CopyResource($data, array('type' => 'update', 'route' => 'copy.update'));
     }
 
     /**
@@ -108,13 +109,13 @@ class CopyController extends Controller
      */
     public function destroy($id)
     {
-        try{
-            $data = $this
-            ->copy
-            ->destroyTask($id);
-        }catch(\Throwable|\Exception $e){
-            return ResponseService::exception('copy.destroy',$id,$e);
+        try {
+            $this
+                ->copy
+                ->destroyCopy($id);
+        } catch (\Throwable | \Exception $e) {
+            return ResponseService::exception('copy.destroy', $id, $e);
         }
-        return new CopyResource($data,array('type' => 'destroy','route' => 'copy.destroy')); 
+        return ResponseService::default(array('type' => 'destroy', 'route' => 'copy.destroy'), $id);
     }
 }

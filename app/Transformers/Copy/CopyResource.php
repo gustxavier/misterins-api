@@ -40,6 +40,7 @@ class CopyResource extends JsonResource
             'important_text' => $this->important_text,            
             'description' => $this->description,
             'course_id' => $this->course_id,       
+            'course_title' => isset($this->course_title) ? $this->course_title : '',       
         ];
     }
 

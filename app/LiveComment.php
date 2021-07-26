@@ -9,7 +9,9 @@ class LiveComment extends Model
     protected $fillable = ['user_id','comment','live_id'];
 
     public function index(){
-        return  $this->get();
+        return  $this->join('live_has_courses','lives.id', '=', 'live_has_courses.live_id')
+        ->join('courses', 'courses.id', '=', 'live_has_courses.course_id')
+        ->get();
     }
 
     public function getByUserId($user_id){        

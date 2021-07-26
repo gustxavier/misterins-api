@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Course;
+use App\LiveHasCourse;
 use App\Services\ResponseService;
 use App\Transformers\Course\CourseResource;
 use App\Transformers\Course\CourseResourceCollection;
@@ -14,13 +15,14 @@ class CourseController extends Controller
 {
     private $course;
 
-    public function __construct(Course $course){
+    public function __construct(Course $course)
+    {
         $this->course = $course;
     }
 
     /**
      * Display a listing of the resource.
-     * 
+     *
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
@@ -29,7 +31,7 @@ class CourseController extends Controller
         return new CourseResourceCollection($this->course->index());
     }
 
-        /**
+    /**
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
@@ -37,15 +39,15 @@ class CourseController extends Controller
      */
     public function update(Request $request, $id)
     {
-        try{        
+        try {
             $data = $this
-            ->course
-            ->updateCourse($request->all(), $id);
-        }catch(\Throwable|\Exception $e){
-            return ResponseService::exception('courses.update',$id,$e);
+                ->course
+                ->updateCourse($request->all(), $id);
+        } catch (\Throwable | \Exception $e) {
+            return ResponseService::exception('courses.update', $id, $e);
         }
 
-        return new CourseResource($data,array('type' => 'update','route' => 'courses.update'));
+        return new CourseResource($data, array('type' => 'update', 'route' => 'courses.update'));
     }
 
     public function show($id)
@@ -61,7 +63,8 @@ class CourseController extends Controller
         return new CourseResource($data, array('type' => 'show', 'route' => 'courses.show'));
     }
 
-    public function getCoursesByUser($userID){
+    public function getCoursesByUser($userID)
+    {
 
         $userHasCourse = new UserHasCourse;
 
@@ -69,11 +72,28 @@ class CourseController extends Controller
             'status' => true,
             'data' => array(
                 'all' => $this->course->index()->toArray(),
-                'checked' => $userHasCourse->getCoursesByUser($userID)->toArray()
+                'checked' => $userHasCourse->getCoursesByUser($userID)->toArray(),
             ),
             'permission' => Auth::user()->permission,
-            'msg'    => 'Listando dados',
-            'url'    => route('courses.index')
+            'msg' => 'Listando dados',
+            'url' => route('courses.getCoursesByUser', $userID),
+        );
+        return $data;
+    }
+
+    public function getCoursesByLive($liveID)
+    {
+        $liveHasCourse = new LiveHasCourse;
+
+        $data = array(
+            'status' => true,
+            'data' => array(
+                'all' => $this->course->index()->toArray(),
+                'checked' => $liveHasCourse->getCoursesByLive($liveID)->toArray(),
+            ),
+            'permission' => Auth::user()->permission,
+            'msg' => 'Listando dados',
+            'url' => route('courses.getCoursesByLive', $liveID),
         );
         return $data;
     }
