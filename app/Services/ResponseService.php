@@ -101,6 +101,9 @@ Class ResponseService{
     }
   }
 
+  /**
+   * 
+   */
   public static function alert($type, $msg){
     return response()->json([
       'status' => true,

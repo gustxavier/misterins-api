@@ -39,7 +39,10 @@ class LiveResource extends JsonResource
             'title' => $this->title,
             'url' => $this->url,            
             'description' => $this->description,        
-            'is_active' => $this->is_active == 'N' ? 'Não': 'Sim',        
+            'thumbnail' => $this->thumbnail,        
+            'date' => $this->date,        
+            'hour' => $this->hour,        
+            'is_active' => $this->is_active,        
         ];
     }
 

@@ -60,11 +60,15 @@ Route::group(['prefix' => 'v1', 'middleware' => ['jwt.verify','throttle:5000,1']
   
   //Copies
   Route::get('copy/getCopyByCourseID/{course_id}', 'CopyController@getCopyByCourseID')->name('copy.getcopybycourseid');
-    
+  
   //Partner Videos
   Route::get('partnervideo/getVideos/{course_id}/{type}', 'PartnerVideoController@getVideos')->name('partnervideo.getvideos');
   Route::get('partnervideo/getByType/{type}', 'PartnerVideoController@getByType')->name('partnervideo.getByType');
   Route::get('partnervideo/downloadVideo/{id}', 'PartnerVideoController@downloadVideo')->name('partnervideo.downloadVideo');
+  
+  // Lives
+  Route::put('lives/uploadThumbnail/{live}', 'LiveController@uploadThumbnail')->name('lives.uploadThumbnail');
+  Route::put('lives/updateLiveHasCourses/{live}', 'LiveController@updateLiveHasCourses')->name('lives.updateLiveHasCourses');
 
 });
 

@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\DB;
 
 class Live extends Model
 {
-    protected $fillable = ['title', 'url', 'description'];
+    protected $fillable = ['title', 'url', 'description', 'thumbnail','date', 'hour', 'is_active'];
 
     public function index()
     {
@@ -40,7 +40,6 @@ class Live extends Model
     public function destroyLive($id)
     {
         $lives = $this->show($id);
-
         $lives->delete();
         return $lives;
     }
