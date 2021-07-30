@@ -15,6 +15,11 @@ class LiveHasCourse extends Model
         'live_id', 'course_id',
     ];
 
+    public function index()
+    {
+        return $this->join('courses', 'courses.id','=','live_has_courses.course_id')->get();
+    }
+
     public function getCoursesByLive($liveID)
     {
         return $this->where('live_has_courses.live_id', '=', $liveID)->join('courses', 'courses.id', '=', 'live_has_courses.course_id')->get();
