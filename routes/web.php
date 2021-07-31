@@ -18,6 +18,7 @@ Route::get('/', function () {
 });
 
 Route::get('/campanha/{slug}', 'CampaignController@redirect')->name('campanha');
+Route::get('/parceria/{slug}', 'CampaignController@redirectParceria')->name('parceria');
 
 Route::get('/message', function () {
     $message['id'] = "2";
