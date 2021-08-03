@@ -107,16 +107,10 @@ class LiveController extends Controller
      */
     public function update(Request $request, $id)
     {
-
-        $request->merge(
-            array('date' => formatDate($request->input('date'))),
-        );
         try {
-
             $data = $this
                 ->live
                 ->updateLive($request->all(), $id);
-
         } catch (\Throwable | \Exception $e) {
             return ResponseService::exception('lives.update', $id, $e);
         }
@@ -161,7 +155,9 @@ class LiveController extends Controller
                 ->live
                 ->show($id);
 
-            unlink(storage_path() . '/app/public/' . $live->thumbnail);
+            if (file_exists(storage_path() . '/app/public/' . $live->thumbnail)) {
+                unlink(storage_path() . '/app/public/' . $live->thumbnail);
+            }
 
             $fileExtension = explode('/', explode(':', substr($image, 0, strpos($image, ';')))[1])[1];
             $fileNameStorage = time() . '_' . date('Ymd-His') . '.' . $fileExtension;

@@ -16,7 +16,7 @@ class AddDateAndHourToLivesTable extends Migration
         Schema::table('lives', function (Blueprint $table) {
             $table->date('date')->after('description')->nullable();
             $table->time('hour')->after('description')->nullable();
-            $table->string('thumbnail')->after('description');
+            $table->string('thumbnail')->after('description')->nullable();
         });
     }
 
