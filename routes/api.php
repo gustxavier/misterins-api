@@ -63,9 +63,11 @@ Route::group(['prefix' => 'v1', 'middleware' => ['jwt.verify','throttle:5000,1']
   
   //Partner Videos
   Route::get('partnervideo/getVideos/{course_id}/{type}', 'PartnerVideoController@getVideos')->name('partnervideo.getvideos');
+  Route::get('partnervideo/getVideosByCourse/{course_id}', 'PartnerVideoController@getVideosByCourse')->name('partnervideo.getvideosbycourse');
   Route::get('partnervideo/getByType/{type}', 'PartnerVideoController@getByType')->name('partnervideo.getByType');
   Route::get('partnervideo/downloadVideo/{id}', 'PartnerVideoController@downloadVideo')->name('partnervideo.downloadVideo');
-  
+  Route::put('partnervideo/uploadThumbnail/{live}', 'PartnerVideoController@uploadThumbnail')->name('partnervideo.uploadThumbnail');
+
   // Lives
   Route::get('liveHasCourse', 'LiveHasCourseController@index')->name('livehascourse.index');
   Route::put('lives/uploadThumbnail/{live}', 'LiveController@uploadThumbnail')->name('lives.uploadThumbnail');

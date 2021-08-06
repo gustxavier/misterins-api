@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class PartnerVideo extends Model
 {
-    protected $fillable = ['title','path', 'type','file_name', 'file_extension', 'course_id'];
+    protected $fillable = ['title','url', 'type','thumbnail', 'course_id'];
 
     public function index(){
         return  $this->get();
@@ -16,7 +16,7 @@ class PartnerVideo extends Model
         return $this->where('type', $type)->where('course_id', $courseID)->orderBy('created_at', 'DESC')->get();
     }
 
-    public function getVideoByCourseID($couseID){
+    public function getVideosByCourse($couseID){
         return $this->where('course_id', $couseID)->orderBy('created_at', 'DESC')->get();
     }
 
@@ -37,8 +37,7 @@ class PartnerVideo extends Model
 
     public function updatePartnerVideo($fields, $id)
     {
-        $partnerVideo = $this->show($id);
-
+        $partnerVideo = $this->show($id);        
         $partnerVideo->update($fields);
         return $partnerVideo;
     }

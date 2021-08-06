@@ -43,6 +43,7 @@ class LiveResource extends JsonResource
             'date' => $this->date,        
             'hour' => $this->hour,        
             'is_active' => $this->is_active,        
+            'date_formated' => $this->date_formated,        
         ];
     }
 

@@ -2,9 +2,8 @@
 
 namespace App\Http\Requests\PartnerVideo;
 
-use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Validation\ValidationException;
 use Illuminate\Contracts\Validation\Validator;
+use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
 
 class StorePartnerVideo extends FormRequest
@@ -27,8 +26,8 @@ class StorePartnerVideo extends FormRequest
     public function rules()
     {
         return [
-            'title'      => 'required',
-            'type'      => 'required',
+            'title' => 'required',
+            'url' => 'required',
         ];
     }
 
@@ -43,11 +42,11 @@ class StorePartnerVideo extends FormRequest
 
         if ($validator->fails()) {
             throw new HttpResponseException(response()->json([
-                'msg'   => 'Ops! Algum campo obrigatório não foi preenchido.',
+                'msg' => 'Ops! Algum campo obrigatório não foi preenchido.',
                 'status' => false,
-                'errors'    => $validator->errors(),
-                'url'    => route('partnervideo.store')
+                'errors' => $validator->errors(),
+                'url' => route('partnervideo.store'),
             ], 403));
-       }
+        }
     }
 }

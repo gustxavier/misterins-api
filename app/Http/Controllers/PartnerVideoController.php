@@ -11,8 +11,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\Storage;
-use Intervention\Image\Facades\Image;
-
 
 class PartnerVideoController extends Controller
 {
@@ -25,7 +23,7 @@ class PartnerVideoController extends Controller
 
     /**
      * Display a listing of the resource.
-     * 
+     *
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
@@ -43,29 +41,31 @@ class PartnerVideoController extends Controller
     public function store(StorePartnerVideo $request)
     {
         try {
-            $path = '/' . $request->input('type') . '/';
+            if ($request->input('type') === null) {
+                return ResponseService::alert('warning', 'Oops! Você precisa selecionar um tipo de postagem.');
+            }
+
+            $path = 'socio/' . $request->course_id . '/' . $request->input('type') . '/';
 
             if (!File::isDirectory(storage_path() . '/app/public/' . $path)) {
                 Storage::makeDirectory(storage_path() . '/app/public/' . $path);
             }
 
-            $video = $request->get('archive');
-            $fileExtension = explode('/', explode(':', substr($video, 0, strpos($video, ';')))[1])[1];
+            $image = $request->get('thumbnail');
+
+            if (empty($image)) {
+                return ResponseService::alert('warning', 'Oops! Você precisa inserir uma imagem.');
+            }
+
+            $fileExtension = explode('/', explode(':', substr($image, 0, strpos($image, ';')))[1])[1];
             $fileNameStorage = time() . '_' . date('Ymd-His') . '.' . $fileExtension;
-            
-            $store = Storage::disk('public')->put($path . $fileNameStorage, file_get_contents($video));
-            if($store){
-                $request->merge(
-                    array(
-                        'path' => $path . $fileNameStorage,
-                        'file_name' => str_replace(" ", "_",$request->input('title')) .'.'. $fileExtension,
-                        'file_extension' => $fileExtension
-                    )
-                );
-                $data = $this
-                    ->partnerVideo
-                    ->store($request->all());
-            }                        
+
+            $store = Storage::disk('public')->put($path . $fileNameStorage, file_get_contents($image));
+            if ($store) {
+                $request->merge(['thumbnail' => $path . $fileNameStorage]);
+                $data = $this->partnerVideo->store($request->all());
+            }
+
         } catch (\Throwable | \Exception $e) {
             return ResponseService::exception('partnervideo.store', null, $e);
         }
@@ -91,24 +91,24 @@ class PartnerVideoController extends Controller
 
         return new PartnerVideoResource($data, array('type' => 'show', 'route' => 'partnervideo.show'));
     }
-    
+
     /**
      * Display the specified resource.
      *
      * @param  \App\PartnerVideo  $partnerVideo
      * @return \Illuminate\Http\Response
      */
-    public function getVideoByCourseID($id)
+    public function getVideosByCourse($id)
     {
         try {
             $data = $this
                 ->partnerVideo
-                ->getVideoByCourseID($id);
+                ->getVideosByCourse($id);
         } catch (\Throwable | \Exception $e) {
-            return ResponseService::exception('partnervideo.getvideobycourseid', $id, $e);
+            return ResponseService::exception('partnervideo.getvideosbycourse', $id, $e);
         }
 
-        return new PartnerVideoResource($data, array('type' => 'get', 'route' => 'partnervideo.getvideobycourseid'));
+        return new PartnerVideoResourceCollection($data);
     }
 
     /**
@@ -137,11 +137,13 @@ class PartnerVideoController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function destroy($id)
-    {
+    {   
         try {
             $data = $this
                 ->partnerVideo
-                ->destroyPartnerVideo($id);
+                ->show($id);
+            unlink(storage_path() . '/app/public/' . $data->thumbnail);
+            $data->delete();
         } catch (\Throwable | \Exception $e) {
             return ResponseService::exception('partnervideo.destroy', $id, $e);
         }
@@ -153,24 +155,69 @@ class PartnerVideoController extends Controller
         try {
             $data = $this
                 ->partnerVideo
-                ->getVideos($courseID,$type);
+                ->getVideos($courseID, $type);
         } catch (\Throwable | \Exception $e) {
             return ResponseService::exception('partnervideo.getvideos', $type, $e);
         }
         return new PartnerVideoResourceCollection($data);
     }
 
+    public function uploadThumbnail(Request $request, $id)
+    {
+        try {
+
+            $video = $this
+                ->partnerVideo
+                ->show($id);
+
+            $path = 'socio/' . $video->course_id . '/' . $video->type . '/';
+
+            if (!File::isDirectory(storage_path() . '/app/public/' . $path)) {
+                Storage::makeDirectory(storage_path() . '/app/public/' . $path);
+            }
+
+            $image = $request->get('thumbnail');
+
+            if (empty($image)) {
+                return ResponseService::alert('warning', 'Oops! Você precisa inserir uma imagem.');
+            }
+
+            if (file_exists(storage_path() . '/app/public/' . $video->thumbnail)) {
+                unlink(storage_path() . '/app/public/' . $video->thumbnail);
+            }
+
+            $fileExtension = explode('/', explode(':', substr($image, 0, strpos($image, ';')))[1])[1];
+            $fileNameStorage = time() . '_' . date('Ymd-His') . '.' . $fileExtension;
+
+            $store = Storage::disk('public')->put($path . $fileNameStorage, file_get_contents($image));
+
+            if ($store) {
+                $request->merge(
+                    array('thumbnail' => $path . $fileNameStorage),
+                );
+                $data = $this
+                    ->partnerVideo
+                    ->updatePartnerVideo($request->all(), $id);
+            }
+
+        } catch (\Throwable | \Exception $e) {
+            return ResponseService::exception('partnervideo.uploadThumbnail', $id, $e);
+        }
+
+        return new PartnerVideoResource($data, array('type' => 'update', 'route' => 'partnervideo.uploadThumbnail'));
+    }
+
     /**
-     * 
+     *
      */
     public function downloadVideo($id)
     {
-        
+
         try {
             $data = $this
                 ->partnerVideo
                 ->show($id);
-            return response()->download(public_path('storage/' . $data->path),null,array('Content-Type: application/mp4'));
+            return response()->download(public_path('storage/' . $data->path), null, array('Content-Type: application/mp4'));
         } catch (\Throwable | \Exception $e) {
             return ResponseService::exception('partnervideo.downloadVideo', $id, $e);
         }

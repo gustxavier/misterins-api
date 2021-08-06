@@ -7,11 +7,11 @@ use Illuminate\Support\Facades\DB;
 
 class Live extends Model
 {
-    protected $fillable = ['title', 'url', 'description', 'thumbnail','date', 'hour', 'is_active'];
+    protected $fillable = ['title', 'url', 'description', 'thumbnail', 'date', 'hour', 'is_active'];
 
     public function index()
     {
-        return  $this->get();
+        return $this->select('*', DB::raw('DATE_FORMAT (date, "%d-%m-%Y") as date_formated'))->get();
     }
 
     public function insert($fields)
@@ -21,8 +21,8 @@ class Live extends Model
 
     public function show($id)
     {
-        $show = $this->find($id);
- 
+        $show = $this->select('*', DB::raw('DATE_FORMAT (date, "%d-%m-%Y") as date_formated'))->find($id);
+
         if (!$show) {
             throw new \Exception('Nada Encontrado', -404);
         }

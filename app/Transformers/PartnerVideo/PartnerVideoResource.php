@@ -2,8 +2,8 @@
 
 namespace App\Transformers\PartnerVideo;
 
-use Illuminate\Http\Resources\Json\JsonResource;
 use App\Services\ResponseService;
+use Illuminate\Http\Resources\Json\JsonResource;
 
 class PartnerVideoResource extends JsonResource
 {
@@ -25,7 +25,7 @@ class PartnerVideoResource extends JsonResource
 
         $this->config = $config;
     }
-    
+
     /**
      * Transform the resource into an array.
      *
@@ -37,10 +37,10 @@ class PartnerVideoResource extends JsonResource
         return [
             'id' => $this->id,
             'title' => $this->title,
-            'path' => $this->path,            
-            'file_name' => $this->file_name,            
-            'type' => $this->type,            
-            'course_id' => $this->course_id,            
+            'url' => $this->url,
+            'thumbnail' => $this->thumbnail,
+            'type' => $this->type,
+            'course_id' => $this->course_id,
         ];
     }
 
@@ -52,7 +52,7 @@ class PartnerVideoResource extends JsonResource
      */
     public function with($request)
     {
-        return ResponseService::default($this->config,$this->id);
+        return ResponseService::default($this->config, $this->id);
     }
 
     /**
