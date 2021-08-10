@@ -4,11 +4,97 @@ namespace App\Http\Controllers;
 
 use App\Campaign;
 use App\CampaignHasWppGroup;
+use App\Services\ResponseService;
+use App\Transformers\Campaign\CampaignResource;
+use App\Transformers\Campaign\CampaignResourceCollection;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Storage;
 
 class CampaignController extends Controller
 {
+
+    private $campaign;
+
+    public function __construct(Campaign $campaign)
+    {
+        $this->campaign = $campaign;
+    }
+
+    /**
+     * Display a listing of the resource.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function index()
+    {
+        return new CampaignResourceCollection($this->campaign->index());
+    }
+
+    public function store(Request $request)
+    {
+        try {
+            $data = $this
+                ->campaign
+                ->store($request->all());
+        } catch (\Throwable | \Exception $e) {
+            return ResponseService::exception('campaign.store', null, $e);
+        }
+
+        return new CampaignResource($data, array('type' => 'store', 'route' => 'campaign.store'));
+    }
+
+    /**
+     * Display the specified resource.
+     *
+     * @param  \App\Tasks  $tasks
+     * @return \Illuminate\Http\Response
+     */
+    public function show($id)
+    {
+        try {
+            $data = $this
+                ->campaign
+                ->show($id);
+        } catch (\Throwable | \Exception $e) {
+            return ResponseService::exception('campaign.show', $id, $e);
+        }
+
+        return new CampaignResource($data, array('type' => 'show', 'route' => 'campaign.show'));
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  \App\Campaign  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function destroy($id)
+    {
+        try {
+            $data = $this
+                ->campaign
+                ->destroyCampaign($id);
+        } catch (\Throwable | \Exception $e) {
+            return ResponseService::exception('campaign.destroy', $id, $e);
+        }
+        return new CampaignResource($data, array('type' => 'destroy', 'route' => 'campaign.destroy'));
+    }
+
+    public function update(Request $request, $id)
+    {
+        try {
+            $data = $this
+                ->campaign
+                ->updateCampaign($request->all(), $id);
+        } catch (\Throwable | \Exception $e) {
+            return ResponseService::exception('campaign.update', $id, $e);
+        }
+
+        return new CampaignResource($data, array('type' => 'update', 'route' => 'campaign.update'));
+    }
+
     public function redirect($slug)
     {
 

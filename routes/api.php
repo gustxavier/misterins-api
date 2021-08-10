@@ -34,6 +34,7 @@ Route::group(['prefix' => 'v1', 'middleware' => ['jwt.verify','throttle:5000,1']
   Route::apiResources([
     'tasklist'  =>  'TaskListController',
     'tasks'  =>  'TasksController',
+    'campaign' => 'CampaignController',
     'lives' => 'LiveController',
     'live-comment' => 'LiveCommentController',
     'copy' => 'CopyController',
