@@ -155,7 +155,7 @@ class LiveController extends Controller
                 ->live
                 ->show($id);
 
-            if (!empty($live->thumbnail) && file_exists(storage_path() . '/app/public/' . $live->thumbnail)) {
+            if (!empty($live->thumbnail) && Storage::exists('public/' . $live->thumbnail)) {
                 unlink(storage_path() . '/app/public/' . $live->thumbnail);
             }
 

@@ -21,8 +21,9 @@ class Live extends Model
 
     public function show($id)
     {
-        $show = $this->select('*', DB::raw('DATE_FORMAT (date, "%d-%m-%Y") as date_formated'))->find($id);
-
+        // $show = $this->select('*', DB::raw("DATE_FORMAT (lives.date, '%d-%m-%Y') as date_formated"))->find($id);
+        $show = $this->find($id);
+ 
         if (!$show) {
             throw new \Exception('Nada Encontrado', -404);
         }
