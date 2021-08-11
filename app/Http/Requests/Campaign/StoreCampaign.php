@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Requests\Copy;
+namespace App\Http\Requests\Campaign;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\ValidationException;
@@ -48,7 +48,7 @@ class StoreCampaign extends FormRequest
                 'msg'   => 'Ops! Algum campo obrigatório não foi preenchido.',
                 'status' => false,
                 'errors'    => $validator->errors(),
-                'url'    => route('copy.store')
+                'url'    => route('campaign.store')
             ], 403));
         }
     }

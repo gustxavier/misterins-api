@@ -45,7 +45,6 @@ class PartnerVideo extends Model
     public function destroyPartnerVideo($id)
     {
         $partnerVideo = $this->show($id);
-        $partnerVideo->delete();
         return $partnerVideo->delete();
     }
 }

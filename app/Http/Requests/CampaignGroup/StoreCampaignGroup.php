@@ -1,13 +1,13 @@
 <?php
 
-namespace App\Http\Requests\Course;
+namespace App\Http\Requests\CampaignGroup;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Http\Exceptions\HttpResponseException;
 
-class StoreCourse extends FormRequest
+class StoreCampaignGroup extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -27,8 +27,10 @@ class StoreCourse extends FormRequest
     public function rules()
     {
         return [
-            'title'      => 'required',
-            'hotmart_id'      => 'required',
+            'name_group'      => 'required',
+            'redirect_link'      => 'required',
+            'order'      => 'required',
+            'max_click'      => 'required',
         ];
     }
 
@@ -46,7 +48,7 @@ class StoreCourse extends FormRequest
                 'msg'   => 'Ops! Algum campo obrigatório não foi preenchido.',
                 'status' => false,
                 'errors'    => $validator->errors(),
-                'url'    => route('course.store')
+                'url'    => route('campaigngroup.store')
             ], 403));
         }
     }

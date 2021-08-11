@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Campaign;
 use App\CampaignHasWppGroup;
+use App\Http\Requests\Campaign\StoreCampaign;
 use App\Services\ResponseService;
 use App\Transformers\Campaign\CampaignResource;
 use App\Transformers\Campaign\CampaignResourceCollection;
@@ -32,7 +33,7 @@ class CampaignController extends Controller
         return new CampaignResourceCollection($this->campaign->index());
     }
 
-    public function store(Request $request)
+    public function store(StoreCampaign $request)
     {
         try {
             $data = $this

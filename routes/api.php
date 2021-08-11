@@ -35,6 +35,7 @@ Route::group(['prefix' => 'v1', 'middleware' => ['jwt.verify','throttle:5000,1']
     'tasklist'  =>  'TaskListController',
     'tasks'  =>  'TasksController',
     'campaign' => 'CampaignController',
+    'campaigngroup' => 'CampaignHasWppGroupController',
     'lives' => 'LiveController',
     'live-comment' => 'LiveCommentController',
     'copy' => 'CopyController',
@@ -73,7 +74,9 @@ Route::group(['prefix' => 'v1', 'middleware' => ['jwt.verify','throttle:5000,1']
   Route::get('liveHasCourse', 'LiveHasCourseController@index')->name('livehascourse.index');
   Route::put('lives/uploadThumbnail/{live}', 'LiveController@uploadThumbnail')->name('lives.uploadThumbnail');
   Route::put('lives/updateLiveHasCourses/{live}', 'LiveController@updateLiveHasCourses')->name('lives.updateLiveHasCourses');
-
+  
+  // Campaign Group
+  Route::get('campaigngroup/getByCampaignID/{campaign}', 'CampaignHasWppGroupController@getByCampaignID')->name('campaigngroup.getByCampaignID');
 });
 
 // Route::get('send-mail', function () {
