@@ -46,7 +46,7 @@ class CampaignHasWppGroupController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function store(StoreCampaignGroup $request)
-    {
+    {         
         try {
             $data = $this
                 ->campaignGroup

@@ -31,6 +31,10 @@ class Campaign extends Model
         return $show;
     }
 
+    public function getBySlug($slug){
+        return $this->get()->where('slug', '=', $slug);
+    }
+
     public function updateCampaign($fields, $id)
     {
         $campaign = $this->show($id);

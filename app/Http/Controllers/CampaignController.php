@@ -35,7 +35,17 @@ class CampaignController extends Controller
 
     public function store(StoreCampaign $request)
     {
+        if (strtotime($request->input('start')) >= strtotime($request->input('end'))) {
+            return ResponseService::alert('warning', 'Atenção! A data de início deve ser menor que a de término da campanha');
+        }
+
         try {
+            $isExists = $this->campaign->getBySlug($request->input('slug'));
+
+            if (count($isExists) > 0) {
+                return ResponseService::alert('warning', 'Atenção! Este slug já existe');
+            }
+
             $data = $this
                 ->campaign
                 ->store($request->all());
