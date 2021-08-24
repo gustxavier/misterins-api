@@ -32,15 +32,16 @@ Route::prefix('v1')->group(function () {
  */
 Route::group(['prefix' => 'v1', 'middleware' => ['jwt.verify','throttle:5000,1']], function () {
   Route::apiResources([
-    'tasklist'  =>  'TaskListController',
-    'tasks'  =>  'TasksController',
     'campaign' => 'CampaignController',
     'campaigngroup' => 'CampaignHasWppGroupController',
+    'copy' => 'CopyController',
+    'courses' => 'CourseController',
+    'launch' => 'LaunchController',
     'lives' => 'LiveController',
     'live-comment' => 'LiveCommentController',
-    'copy' => 'CopyController',
     'partnervideo' => 'PartnerVideoController',
-    'courses' => 'CourseController',
+    'tasklist'  =>  'TaskListController',
+    'tasks'  =>  'TasksController',
     'users' => 'UserController',
   ]);
 
